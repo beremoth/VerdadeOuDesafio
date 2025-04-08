@@ -1,15 +1,38 @@
+# Diretórios de build (não precisam ir para o Git)
 *.iml
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
+/.idea
+/.cxx
+/.settings
 /build
 /captures
-.externalNativeBuild
-.cxx
-local.properties
+/.externalNativeBuild
+
+# Dependências (o Gradle pode baixar novamente)
+**/node_modules/
+/**/.gradle/
+/**/.idea/caches/
+/**/.idea/libraries/
+/**/.idea/modules.xml
+**/.idea/workspace.xml
+**/.idea/navEditor.xml
+**/.idea/assetWizardSettings.xml
+/output.json
+
+# Arquivos de log e temporários
+*.log
+*.lock
+*.class
+*.apk
+*.ap_
+*.db
+*.zip
+*.jar
+
+# Arquivos do sistema operacional (Windows e macOS)
+.DS_Store
+Thumbs.db
+
+# Arquivos do Android Studio
+*.keystore
