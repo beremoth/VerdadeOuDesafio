@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F50401"> <!-- Cor de fundo -->
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Como Funciona"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/dialogMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bem_vindo_ao_verdade_ou_desafio_n_n_1_escolha_entre_verdade_ou_desafio_n_2_o_aplicativo_exibir_uma_pergunta_ou_desafio_aleat_rio_com_base_no_n_vel_selecionado_n_3_use_o_bot_o_n_vel_para_ajustar_o_n_vel_das_perguntas_n_leve_perguntas_desafios_simples_n_moderado_perguntas_desafios_m_dios_n_extremo_perguntas_desafios_intensos_n_4_se_n_o_quiser_responder_clique_em_pular_para_receber_uma_consequ_ncia_n_n_divirta_se"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
+        android:paddingBottom="16dp"/>
+
+    <Button
+        android:id="@+id/dialogButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entendido"
+        android:backgroundTint="#FFBB86FC"
+        android:textColor="#FFFFFF" /> <!-- Cor do texto do botão -->
+
+</LinearLayout>

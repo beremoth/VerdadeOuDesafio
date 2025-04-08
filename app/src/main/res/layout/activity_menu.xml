@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="#1A1A1A">
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Verdade ou Desafio"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp"/>
+
+
+    <!-- Botão Iniciar Jogo -->
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Iniciar Jogo"
+        android:backgroundTint="#FF4081"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Botão Instruções -->
+    <Button
+        android:id="@+id/instructionsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Instruções"
+        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Botão Configurações -->
+
+    <Button
+        android:id="@+id/createQuestionsButton"
+        android:layout_width="378dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/levelText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"
+        android:text="Criar Perguntas"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#F50401"/>
+
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Configurações"
+        android:backgroundTint="#9C27B0"
+        android:textColor="#FFFFFF"/>
+</LinearLayout>

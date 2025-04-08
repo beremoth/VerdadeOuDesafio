@@ -1,0 +1,10 @@
+<!-- res/drawable/timer_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#F50401" /> <!-- Cor de fundo rosa -->
+    <corners android:radius="16dp" /> <!-- Bordas arredondadas -->
+    <padding
+        android:left="16dp"
+        android:top="8dp"
+        android:right="16dp"
+        android:bottom="8dp" />
+</shape>
