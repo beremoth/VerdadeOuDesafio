@@ -1,11 +1,10 @@
 package com.example.verdadeoudesafio
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import com.example.verdadeoudesafio.databinding.ActivityMenuBinding
 
 class MenuActivity : AppCompatActivity() {
