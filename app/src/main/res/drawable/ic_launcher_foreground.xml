@@ -5,68 +5,45 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Lábio superior -->
+    <!-- Lábio superior volumoso e curvado -->
     <path
         android:fillColor="#FF3366"
-        android:pathData="M25,50C35,30 73,30 83,50C85,55 70,62 54,62C38,62 23,55 25,50Z" />
-
-    <!-- Lábio inferior -->
-    <path
-        android:fillColor="#FF4477"
-        android:pathData="M25,54C30,65 40,75 54,75C68,75 80,65 83,54C85,50 70,62 54,62C42,62 30,58 28,54Z" />
-
-    <!-- Dente mordendo o lábio inferior -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M80,52C82,48 84,44 86,40C88,38 90,42 88,50C86,54 84,56 80,52Z" />
-
-    <!-- Sombra da mordida no lábio inferior -->
-    <path
-        android:fillColor="#FF2255"
-        android:pathData="M80,52C82,48 84,44 86,40C88,38 90,42 88,50C86,54 84,56 80,52Z"
-        android:strokeWidth="1"
-        android:strokeColor="#FF1144"
-        android:strokeLineCap="round"
+        android:pathData="M15,50C25,20 83,20 93,50C95,55 80,65 54,65C28,65 15,55 15,50Z"
+        android:strokeWidth="3"
+        android:strokeColor="#C2185B"
         android:strokeLineJoin="round" />
 
-    <!-- Reflexo superior -->
+    <!-- Lábio inferior curvado com mordida no canto direito -->
+    <path
+        android:fillColor="#FF3366"
+        android:pathData="M17,55C27,80 45,90 54,90C63,90 81,80 91,55C85,65 65,75 54,75C43,75 30,68 17,55Z"
+        android:strokeWidth="3"
+        android:strokeColor="#C2185B"
+        android:strokeLineJoin="round" />
+
+    <!-- Dente mordendo o canto inferior direito -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M35,43C45,35 63,35 73,43"
+        android:pathData="M76,64C79,59 82,54 85,50C87,48 89,52 88,56C86,60 82,65 76,64Z"
         android:strokeWidth="2"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineJoin="round" />
+
+    <!-- Reflexos superiores para dar brilho -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M35,35C48,25 60,25 73,35"
+        android:strokeWidth="3"
         android:strokeColor="#FFFFFF"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
 
-    <!-- Reflexo inferior -->
+    <!-- Reflexos inferiores para efeito de volume -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M40,65C47,72 61,72 68,65"
-        android:strokeWidth="2"
+        android:pathData="M40,72C46,78 62,78 68,72"
+        android:strokeWidth="3"
         android:strokeColor="#FFFFFF"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
-
-    <!-- Destaque no canto da boca (sinal de excitação) -->
-    <path
-        android:fillColor="#FFCCCC"
-        android:pathData="M82,50C84,48 86,46 88,44C90,42 92,46 90,50C88,52 86,54 84,56C82,58 80,54 82,50Z" />
-
-    <!-- Sombra no lábio inferior -->
-    <path
-        android:fillColor="#FF2255"
-        android:pathData="M25,54C30,65 40,75 54,75C68,75 80,65 83,54C85,50 70,62 54,62C42,62 30,58 28,54Z"
-        android:strokeWidth="1"
-        android:strokeColor="#FF1144"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
-
-    <!-- Reflexo no dente -->
-    <path
-        android:fillColor="#FFFFCC"
-        android:pathData="M80,52C82,48 84,44 86,40C88,38 90,42 88,50C86,54 84,56 80,52Z"
-        android:strokeWidth="1"
-        android:strokeColor="#FFFFCC"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
 </vector>
