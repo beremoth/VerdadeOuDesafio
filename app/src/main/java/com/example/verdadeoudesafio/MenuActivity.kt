@@ -24,30 +24,25 @@ class MenuActivity : AppCompatActivity() {
         }
 
         binding.instructionsButton.setOnClickListener {
-            // Cria um AlertDialog personalizado
             val alertDialogBuilder = AlertDialog.Builder(this)
             val inflater = layoutInflater
             val dialogView = inflater.inflate(R.layout.custom_dialog, null)
 
-            // Define o layout personalizado
             alertDialogBuilder.setView(dialogView)
+
+            // Criando o AlertDialog antes de configurar o botão
+            val alertDialog = alertDialogBuilder.create()
 
             // Vincula os componentes do layout personalizado
             val dialogButton = dialogView.findViewById<Button>(R.id.dialogButton)
 
             // Configura o botão "Entendido"
             dialogButton.setOnClickListener {
-                // Fecha o diálogo quando o botão for clicado
-                alertDialogBuilder.create().dismiss()
+                alertDialog.dismiss() // Fecha o diálogo corretamente
             }
 
             // Exibe o popup
-            alertDialogBuilder.show()
-        }
-
-        binding.createQuestionsButton.setOnClickListener {
-            val intent = Intent(this, CreateQuestionsActivity::class.java)
-            startActivity(intent)
+            alertDialog.show()
         }
 
         binding.settingsButton.setOnClickListener {
