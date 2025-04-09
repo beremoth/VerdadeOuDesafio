@@ -1,68 +1,59 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Tela de Configurações -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#1A1A1A">
+    android:background="@drawable/background_gradient"
+    >
 
-    <!-- Título -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
         android:text="Configurações"
         android:textSize="24sp"
-        android:textColor="#FFFFFF"
         android:textStyle="bold"
-        android:layout_marginBottom="32dp"/>
-
-    <!-- Seleção de Nível -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Escolha o Nível:"
-        android:textSize="18sp"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="16dp"/>
+        android:textColor="@color/white" />
 
     <RadioGroup
         android:id="@+id/levelRadioGroup"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/titleText"
+        android:layout_marginTop="30dp">
 
         <RadioButton
             android:id="@+id/easyLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Leve"
-            android:textColor="#FFFFFF"
-            android:checked="true"/>
+            android:textColor="@color/white" />
 
         <RadioButton
             android:id="@+id/mediumLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Moderado"
-            android:textColor="#FFFFFF"/>
+            android:textColor="@color/white" />
 
         <RadioButton
             android:id="@+id/hardLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Extremo"
-            android:textColor="#FFFFFF"/>
+            android:textColor="@color/white" />
     </RadioGroup>
 
-    <!-- Botão Salvar -->
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/levelRadioGroup"
+        android:layout_marginTop="30dp"
         android:text="Salvar"
-        android:backgroundTint="#FF9800"
-        android:layout_marginTop="32dp"/>
-</LinearLayout>
+        android:textColor="@color/white"
+        android:background="@drawable/button_gradient" />
+</RelativeLayout>

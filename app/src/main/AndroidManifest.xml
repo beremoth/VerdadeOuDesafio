@@ -16,7 +16,7 @@
         <activity
             android:name=".MenuActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+            android:theme="@style/Theme.VerdadeOuDesafio">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -26,15 +26,14 @@
         <activity
             android:name=".SettingsActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+            android:theme="@style/Theme.VerdadeOuDesafio">
         </activity>
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            >
-         </activity>
-
+            android:theme="@style/Theme.VerdadeOuDesafio">
+        </activity>
     </application>
 
 </manifest>

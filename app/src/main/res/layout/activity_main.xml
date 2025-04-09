@@ -1,113 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1A1A1A"
-    android:padding="16dp">
+    android:background="@drawable/background_gradient">
 
-    <!-- TextView para exibir a pergunta -->
+<!-- Área do círculo superior -->
+ <ImageView
+     android:id="@+id/topCircle"
+     android:layout_width="295dp"
+     android:layout_height="229dp"
+     android:layout_alignParentTop="true"
+     android:layout_centerHorizontal="true"
+     android:src="@drawable/top_circle"
+     android:translationY="-100dp" />
+ <!-- Texto da pergunta -->
+ <TextView
+     android:id="@+id/question_text"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:layout_centerHorizontal="true"
+     android:layout_marginTop="250dp"
+     android:text="Escolha"
+     android:textColor="@color/white"
+     android:textSize="18sp"
+     android:textStyle="bold" />
 
-    <!-- Botão Verdade -->
+<!-- Nível -->
+<TextView
+    android:id="@+id/level_text"
+    android:layout_marginTop="20dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/question_text"
+    android:layout_centerHorizontal="true"
+    android:text="NÍVEL - LEVE"
+    android:textColor="@color/white"
+    android:background="@drawable/rounded_background"
+    android:padding="5dp"
+    android:textSize="14sp" />
 
-    <TextView
-        android:id="@+id/questionText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="236dp"
-        android:ellipsize="end"
-        android:padding="16dp"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+ <!-- Contêiner para o Timer e o Botão -->
+ <RelativeLayout
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:layout_below="@id/level_text"
+     android:layout_centerHorizontal="true"
+     android:layout_marginTop="10dp">
 
-    <!-- Texto Level -->
-    <TextView
-        android:id="@+id/levelText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Nível: Leve"
-        android:textSize="16sp"
-        android:textColor="#FFFFFF"
-        android:gravity="center"
-        android:padding="10dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toBottomOf="@id/questionText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+  <!-- Botão para iniciar o Timer -->
+  <Button
+      android:id="@+id/btn_start_timer"
+      android:layout_width="50dp"
+      android:layout_height="50dp"
+      android:layout_marginEnd="10dp"
+      android:background="@drawable/button_gradient"
+      android:text="▶"
+      android:textColor="@color/white"
+      android:textSize="18sp"
+      android:visibility="gone"/>
 
-    <!--timer-->
-    <TextView
-        android:id="@+id/timerText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="00:00"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:gravity="center"
-        android:shadowColor="#000000"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/timer_background"
-        android:padding="8dp"
-        android:shadowDx="2"
-        android:shadowDy="2"
-        android:shadowRadius="4"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/levelText"/>
+  <!-- Timer -->
+  <TextView
+      android:id="@+id/timer_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_toEndOf="@id/btn_start_timer"
+      android:text="00:00"
+      android:textColor="@color/white"
+      android:textSize="24sp"
+      android:textStyle="bold"
+      android:background="@drawable/timer_background"
+      android:padding="10dp"
+      android:visibility="gone"/>
+ </RelativeLayout>
+
+ <!-- Botão Verdade -->
+<Button
+    android:id="@+id/btn_truth"
+    android:layout_marginTop="80dp"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_below="@id/level_text"
+    android:layout_centerHorizontal="true"
+    android:text="VERDADE"
+    android:textColor="@color/white"
+    android:background="@drawable/button_gradient" />
+
+<!-- Botão Desafio -->
+<Button
+    android:id="@+id/btn_dare"
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:layout_below="@id/btn_truth"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="10dp"
+    android:text="DESAFIO"
+    android:textColor="@color/white"
+    android:background="@drawable/button_gradient" />
+
+<!-- Botão Consequência -->
+ <Button
+     android:id="@+id/btn_consequence"
+     android:layout_width="200dp"
+     android:layout_height="50dp"
+     android:layout_below="@id/btn_dare"
+     android:layout_centerHorizontal="true"
+     android:layout_marginTop="10dp"
+     android:text="CONSEQUÊNCIA"
+     android:textColor="@color/white"
+     android:background="@drawable/button_gradient"/>
+
+<!-- Pequeno círculo no canto inferior direito -->
+ <FrameLayout
+     android:layout_width="60dp"
+     android:layout_height="60dp"
+     android:layout_alignParentEnd="true"
+     android:layout_alignParentBottom="true"
+     android:layout_margin="25dp">
+
+  <!-- Botão redondo -->
+  <Button
+      android:id="@+id/btn_settings"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@drawable/small_circle"
+      android:foreground="?attr/selectableItemBackground"
+      android:onClick="openSettings"/>
+
+  <!-- Ícone da engrenagem sobreposto ao botão -->
+  <ImageView
+      android:layout_width="32dp"
+      android:layout_height="32dp"
+      android:layout_gravity="center"
+      android:src="@drawable/ic_gear"
+      android:color="@color/gray"
+      android:elevation="2dp"/>  <!-- Elevação para sobrepor ao botão -->
+
+ </FrameLayout>
 
 
-    <Button
-        android:id="@+id/truthButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Verdade"
-        android:backgroundTint="#FF4081"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toBottomOf="@id/timerText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+</RelativeLayout>
 
-    <!-- Botão Desafio -->
-    <Button
-        android:id="@+id/dareButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Desafio"
-        android:backgroundTint="#4CAF50"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toBottomOf="@id/truthButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Botão Pular -->
-
-    <Button
-        android:id="@+id/skipButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#FF9800"
-        android:text="Pular (Consequência)"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dareButton" />
-
-    <Button
-        android:id="@+id/settingsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Configurações"
-        android:backgroundTint="#9C27B0"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/skipButton"/>
-</androidx.constraintlayout.widget.ConstraintLayout>

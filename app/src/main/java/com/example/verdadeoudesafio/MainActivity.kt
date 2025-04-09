@@ -1,6 +1,7 @@
 package com.example.verdadeoudesafio
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -30,34 +31,32 @@ class MainActivity : AppCompatActivity() {
     private var availableTruthQuestions: MutableList<DatabaseHelper.Question> = mutableListOf()
     private var availableDareQuestions: MutableList<DatabaseHelper.Question> = mutableListOf()
     private var currentTimer: CountDownTimer? = null
+    private var currentQuestionDuration: Int? = null
+    private lateinit var startTimerButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Inicializa o banco de dados
+        // Inicializa os componentes
         dbHelper = DatabaseHelper(this)
-
-        // Inicializa o SharedPreferences
         sharedPreferences = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
-        // Vincula os componentes da interface
-        questionText = findViewById(R.id.questionText)
-        truthButton = findViewById(R.id.truthButton)
-        dareButton = findViewById(R.id.dareButton)
-        skipButton = findViewById(R.id.skipButton)
-        settingsButton = findViewById(R.id.settingsButton)
-        levelText = findViewById(R.id.levelText)
-        timerText = findViewById(R.id.timerText)
+        questionText = findViewById(R.id.question_text)
+        truthButton = findViewById(R.id.btn_truth)
+        dareButton = findViewById(R.id.btn_dare)
+        skipButton = findViewById(R.id.btn_consequence)
+        settingsButton = findViewById(R.id.btn_settings)
+        levelText = findViewById(R.id.level_text)
+        timerText = findViewById(R.id.timer_text)
+        startTimerButton = findViewById(R.id.btn_start_timer)
 
         // Carrega o nível salvo
-        currentLevel = sharedPreferences.getInt("selected_level", 2) // Padrão: Moderado (2)
+        currentLevel = sharedPreferences.getInt("selected_level", 2)
         Log.d("MainActivity", "Nível carregado: $currentLevel")
-
-        // Atualiza o texto do nível
         updateLevelText()
 
-        // Verifica se os dados foram carregados
+        // Verifica se os dados foram carregados corretamente
         if (!dbHelper.checkIfDataIsLoaded()) {
             Toast.makeText(this, "Erro ao carregar perguntas!", Toast.LENGTH_LONG).show()
             Log.e("MainActivity", "Banco de dados vazio")
@@ -65,32 +64,35 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        // Configura os listeners
-        truthButton.setOnClickListener {
-            showQuestion("truth", currentLevel)
-        }
-
-        dareButton.setOnClickListener {
-            showQuestion("dare", currentLevel)
-        }
-
-        skipButton.setOnClickListener {
-            showConsequence()
-        }
+        // Configuração dos botões
+        truthButton.setOnClickListener { showQuestion("truth", currentLevel) }
+        dareButton.setOnClickListener { showQuestion("dare", currentLevel) }
+        skipButton.setOnClickListener { showConsequence() }
 
         settingsButton.setOnClickListener {
-            startActivity(SettingsActivity.getIntent(this))
-            currentLevel = sharedPreferences.getInt("selected_level", 2) // Padrão: Moderado (2)
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+
+            currentLevel = sharedPreferences.getInt("selected_level", 2)
             Log.d("MainActivity", "Nível carregado: $currentLevel")
             updateLevelText()
         }
+
+        // Configuração do botão de iniciar timer
+        startTimerButton.setOnClickListener {
+            currentQuestionDuration?.let { duration ->
+                startTimer(duration)
+            }
+        }
+
+        // Esconde o botão de iniciar o timer ao iniciar o app
+        startTimerButton.visibility = View.GONE
     }
 
     /**
      * Inicia o timer.
      */
     private fun startTimer(durationInSeconds: Int) {
-        // Cancela o timer ativo, se houver
         currentTimer?.cancel()
 
         val totalTimeInMillis = durationInSeconds * 1000L
@@ -101,23 +103,26 @@ class MainActivity : AppCompatActivity() {
                 val seconds = secondsRemaining % 60
                 timerText.text = String.format("%02d:%02d", minutes, seconds)
 
-                // Altera a cor do fundo se faltarem 10 segundos ou menos
-                if (secondsRemaining <= 10) {
-                    timerText.setBackgroundResource(R.drawable.timer_red_background)
-                } else {
-                    timerText.setBackgroundResource(R.drawable.timer_background)
-                }
+                // Se faltam 5 segundos ou menos, ativa alerta visual
+                timerText.isActivated = secondsRemaining <= 5
             }
 
             override fun onFinish() {
                 timerText.text = "Tempo esgotado!"
+                timerText.isActivated = true
+
+                // Reexibir botão ao final do timer
+                startTimerButton.visibility = View.VISIBLE
             }
         }.start()
 
-        // Aplica uma animação de fade-in ao timer
-        val fadeInAnimation = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.fade_in)
-        timerText.startAnimation(fadeInAnimation)
+        // Reset visual
+        timerText.isActivated = false
+
+        // Ocultar botão de iniciar enquanto o timer estiver rodando
+        startTimerButton.visibility = View.GONE
     }
+
 
      /**
      * Carrega as perguntas disponíveis para o tipo e nível especificados.
@@ -167,28 +172,31 @@ class MainActivity : AppCompatActivity() {
      * Exibe uma pergunta aleatória com base no tipo ("verdade" ou "desafio") e no nível.
      */
     private fun showQuestion(type: String, level: Int) {
-        // Carrega as perguntas disponíveis, se ainda não foram carregadas
         if (availableTruthQuestions.isEmpty() || availableDareQuestions.isEmpty()) {
             loadAvailableQuestions(level)
         }
 
-        // Obtém uma pergunta aleatória
         val question = getRandomQuestion(type)
+
         if (question != null) {
             questionText.text = question.text
 
             // Verifica se há um tempo associado à pergunta
-            if (question.duration != null && question.duration > 0) {
+            currentQuestionDuration = question.duration
+            if (currentQuestionDuration != null && currentQuestionDuration!! > 0) {
+                timerText.text = String.format("%02d:%02d", currentQuestionDuration!! / 60, currentQuestionDuration!! % 60)
                 timerText.visibility = View.VISIBLE
-                startTimer(question.duration)
+                startTimerButton.visibility = View.VISIBLE
             } else {
                 timerText.visibility = View.GONE
+                startTimerButton.visibility = View.GONE
             }
         } else {
             questionText.text = "Nenhuma pergunta encontrada!"
             Toast.makeText(this, "Nenhuma pergunta deste tipo/nível", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     /**
      * Carrega as consequências disponíveis para o nível especificado.
