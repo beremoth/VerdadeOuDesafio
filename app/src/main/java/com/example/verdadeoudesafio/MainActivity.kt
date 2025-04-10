@@ -19,20 +19,24 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var questionText: TextView
+    private lateinit var playerText : TextView
     private lateinit var truthButton: Button
     private lateinit var dareButton: Button
     private lateinit var skipButton: Button
     private lateinit var settingsButton: Button
     private lateinit var levelText: TextView
     private lateinit var timerText: TextView
-    private var currentLevel = 2 // Default: Moderado (2)
-    private var availableQuestions: MutableList<DatabaseHelper.Question> = mutableListOf()
+    private lateinit var startTimerButton: Button
+    private lateinit var players: MutableList<String>
+    private var currentPlayerIndex = 0
+    private var currentLevel = 2
     private var availableConsequences: MutableList<String> = mutableListOf()
     private var availableTruthQuestions: MutableList<DatabaseHelper.Question> = mutableListOf()
     private var availableDareQuestions: MutableList<DatabaseHelper.Question> = mutableListOf()
     private var currentTimer: CountDownTimer? = null
     private var currentQuestionDuration: Int? = null
-    private lateinit var startTimerButton: Button
+    private var isGameStarted = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         dbHelper = DatabaseHelper(this)
         sharedPreferences = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
+        playerText = findViewById(R.id.player_text)
         questionText = findViewById(R.id.question_text)
         truthButton = findViewById(R.id.btn_truth)
         dareButton = findViewById(R.id.btn_dare)
@@ -50,6 +55,10 @@ class MainActivity : AppCompatActivity() {
         levelText = findViewById(R.id.level_text)
         timerText = findViewById(R.id.timer_text)
         startTimerButton = findViewById(R.id.btn_start_timer)
+
+        // Carrega os jogadores e sorteia a ordem
+        loadPlayers()
+        updatePlayerText() // Exibe a lista completa antes de iniciar o jogo
 
         // Carrega o nível salvo
         currentLevel = sharedPreferences.getInt("selected_level", 2)
@@ -65,33 +74,65 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Configuração dos botões
-        truthButton.setOnClickListener { showQuestion("truth", currentLevel) }
-        dareButton.setOnClickListener { showQuestion("dare", currentLevel) }
-        skipButton.setOnClickListener { showConsequence() }
-
-        settingsButton.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-
-            currentLevel = sharedPreferences.getInt("selected_level", 2)
-            Log.d("MainActivity", "Nível carregado: $currentLevel")
-            updateLevelText()
+        truthButton.setOnClickListener {
+            isGameStarted = true  // Marca que o jogo começou
+            currentTimer?.cancel()
+            showQuestion("truth", currentLevel)
+            nextPlayer()
         }
 
-        // Configuração do botão de iniciar timer
+        dareButton.setOnClickListener {
+            isGameStarted = true
+            currentTimer?.cancel()
+            showQuestion("dare", currentLevel)
+            nextPlayer()
+        }
+
+        skipButton.setOnClickListener {
+            isGameStarted = true
+            currentTimer?.cancel()
+            showConsequence()
+            nextPlayer()
+        }
+
+
+
+        settingsButton.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
         startTimerButton.setOnClickListener {
             currentQuestionDuration?.let { duration ->
                 startTimer(duration)
             }
         }
 
-        // Esconde o botão de iniciar o timer ao iniciar o app
         startTimerButton.visibility = View.GONE
     }
 
-    /**
-     * Inicia o timer.
-     */
+    private fun loadPlayers() {
+        val savedPlayers = sharedPreferences.getStringSet("players_list", emptySet())?.toList() ?: emptyList()
+        players = if (savedPlayers.isNotEmpty()) savedPlayers.shuffled().toMutableList() else mutableListOf("Jogador 1")
+        currentPlayerIndex = 0
+    }
+
+    private fun updatePlayerText() {
+        if (!isGameStarted) { // Exibe a lista apenas antes do primeiro turno
+            val playersListText = players.joinToString("\n") { "- $it" }
+            playerText.text = "Ordem dos jogadores:\n$playersListText\nPrimeiro a jogar: ${players[0]}"
+        } else { // Durante o jogo, mostra apenas o jogador atual
+            val currentPlayer = players[currentPlayerIndex]
+            playerText.text = "Proximo é: $currentPlayer"
+        }
+    }
+
+
+
+    private fun nextPlayer() {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size
+        updatePlayerText()
+    }
+
     private fun startTimer(durationInSeconds: Int) {
         currentTimer?.cancel()
 
@@ -103,28 +144,21 @@ class MainActivity : AppCompatActivity() {
                 val seconds = secondsRemaining % 60
                 timerText.text = String.format("%02d:%02d", minutes, seconds)
 
-                // Se faltam 5 segundos ou menos, ativa alerta visual
                 timerText.isActivated = secondsRemaining <= 5
             }
 
             override fun onFinish() {
                 timerText.text = "Tempo esgotado!"
                 timerText.isActivated = true
-
-                // Reexibir botão ao final do timer
                 startTimerButton.visibility = View.VISIBLE
             }
         }.start()
 
-        // Reset visual
         timerText.isActivated = false
-
-        // Ocultar botão de iniciar enquanto o timer estiver rodando
         startTimerButton.visibility = View.GONE
     }
 
-
-     /**
+    /**
      * Carrega as perguntas disponíveis para o tipo e nível especificados.
      */
     private fun loadAvailableQuestions(level: Int) {
@@ -265,7 +299,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Atualiza o texto do nível.
+     * Atualiza o texto do nível
      */
     private fun updateLevelText() {
         levelText.text = when (currentLevel) {
