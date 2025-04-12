@@ -3,6 +3,8 @@ package com.example.verdadeoudesafio
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -12,6 +14,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
+import androidx.core.content.ContextCompat
+import android.Manifest
+import androidx.core.app.ActivityCompat
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,6 +49,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Verifica se a permissão já foi concedida
+        if (!checkVibrationPermission()) {
+            requestVibrationPermission()
+        }
+
 
         // Inicializa os componentes
         dbHelper = DatabaseHelper(this)
@@ -151,6 +165,8 @@ class MainActivity : AppCompatActivity() {
                 timerText.text = "Tempo esgotado!"
                 timerText.isActivated = true
                 startTimerButton.visibility = View.VISIBLE
+
+                vibratePhone() // para vibração do celular
             }
         }.start()
 
@@ -231,7 +247,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     /**
      * Carrega as consequências disponíveis para o nível especificado.
      */
@@ -307,6 +322,43 @@ class MainActivity : AppCompatActivity() {
             2 -> "Nível: Moderado"
             3 -> "Nível: Extremo"
             else -> "Nível: Desconhecido"
+        }
+    }
+
+    private fun vibratePhone() {
+        if (!checkVibrationPermission()) {
+            Log.e("Vibration", "Permissão de vibração negada")
+            return
+        }
+
+        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            getSystemService(VIBRATOR_SERVICE) as Vibrator
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(500)
+        }
+    }
+
+
+    private fun checkVibrationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true // Versões abaixo do Android 12 não precisam de permissão extra
+        }
+    }
+
+    private fun requestVibrationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.VIBRATE), 100)
         }
     }
 
