@@ -1,0 +1,34 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/background_gradient"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/txtTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Painel Administrativo"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btnResetarDados"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Resetar Dados"
+        android:background="@drawable/button_gradient"
+        android:textColor="@color/white"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnVoltar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Voltar"
+        android:background="@drawable/button_gradient"
+        android:textColor="@color/white" />
+</LinearLayout>

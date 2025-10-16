@@ -54,6 +54,12 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        fun openAdmin(view: View) {
+            startActivity(Intent(this, AdminActivity::class.java))
+        }
+
+
+
         // Salva as configurações ao clicar no botão "Salvar"
         saveButton.setOnClickListener {
             saveSettings()

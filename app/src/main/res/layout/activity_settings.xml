@@ -92,4 +92,31 @@
         android:text="SALVAR"
         android:background="@drawable/button_gradient"
         android:textColor="@color/white"/>
+
+
+    <!-- Botão de Acesso Admin flutuante -->
+    <FrameLayout
+        android:id="@+id/btn_admin"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="30dp">
+
+        <!-- Círculo de fundo -->
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/small_circle"
+            android:foreground="?attr/selectableItemBackground"
+            android:onClick="openAdmin" />
+
+        <!-- Ícone da chave -->
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_key"
+            android:elevation="2dp"/>
+    </FrameLayout>
+
 </LinearLayout>
