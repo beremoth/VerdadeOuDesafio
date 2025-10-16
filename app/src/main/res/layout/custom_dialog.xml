@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F50401"> <!-- Cor de fundo -->
+    android:background="@drawable/background_gradient"> <!-- Cor de fundo -->
 
     <TextView
         android:id="@+id/dialogTitle"
@@ -33,6 +33,6 @@
         android:layout_height="wrap_content"
         android:text="Entendido"
         android:backgroundTint="#FFBB86FC"
-        android:textColor="#FFFFFF" /> <!-- Cor do texto do botão -->
+        android:textColor="@drawable/button_gradient" /> <!-- Cor do texto do botão -->
 
 </LinearLayout>

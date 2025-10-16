@@ -4,7 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.AppCompatActivity
 import com.example.verdadeoudesafio.databinding.ActivityMenuBinding
 
 class MenuActivity : AppCompatActivity() {
@@ -21,7 +21,9 @@ class MenuActivity : AppCompatActivity() {
         binding.startButton.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
-
+        binding.startButton.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
         binding.instructionsButton.setOnClickListener {
             val alertDialogBuilder = AlertDialog.Builder(this)
             val inflater = layoutInflater
