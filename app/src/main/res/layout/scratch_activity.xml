@@ -11,9 +11,11 @@
         android:scaleType="centerCrop"
         android:src="@drawable/imagem1" /> <!-- valor padrão -->
 
+
     <!-- Camada de raspadinha -->
-    <com.exemplo.verdadeoudesafio.ScratvhView
+    <com.example.verdadeoudesafio.ScratchView
         android:id="@+id/scratchView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
 </FrameLayout>

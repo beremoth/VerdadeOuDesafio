@@ -3,6 +3,7 @@ package com.example.verdadeoudesafio
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 
 
 class ScratchActivity : AppCompatActivity() {

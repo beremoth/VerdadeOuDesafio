@@ -39,18 +39,22 @@
 
     <Button
         android:id="@+id/btnRaspadinha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/instructionsButton"
+        android:layout_marginTop="20dp"
         android:text="Raspadinha"
-        android:layout_gravity="center"
-        android:padding="16dp"/>
+        android:textColor="@color/white"
+        android:background="@drawable/button_gradient" />
+
 
     <Button
         android:id="@+id/settingsButton"
         android:layout_width="250dp"
         android:layout_height="60dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/instructionsButton"
+        android:layout_below="@id/btnRaspadinha"
         android:layout_marginTop="20dp"
         android:text="Configurações"
         android:textColor="@color/white"

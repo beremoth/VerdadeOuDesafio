@@ -4,7 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import androidx.appcompat.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.example.verdadeoudesafio.databinding.ActivityMenuBinding
 
 class MenuActivity : AppCompatActivity() {
@@ -17,13 +17,17 @@ class MenuActivity : AppCompatActivity() {
         binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Configura os listeners
+        // botão para verdade ou desafio
         binding.startButton.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
-        binding.startButton.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+        // botão para rapadinha
+        binding.btnRaspadinha.setOnClickListener {
+            val intent = Intent(this, ScratchActivity::class.java)
+            startActivity(intent)
         }
+
+
         binding.instructionsButton.setOnClickListener {
             val alertDialogBuilder = AlertDialog.Builder(this)
             val inflater = layoutInflater
