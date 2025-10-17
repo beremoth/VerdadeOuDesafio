@@ -12,15 +12,15 @@ interface PerguntaDao {
 
     // 🔹 Insere nova pergunta (ou substitui se já existir o mesmo ID)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(pergunta: PerguntaEntity)
+    suspend fun insert(perguntas: PerguntaEntity)
 
     // 🔹 Atualiza pergunta existente
     @Update
-    suspend fun update(pergunta: PerguntaEntity)
+    suspend fun update(perguntas: PerguntaEntity)
 
     // 🔹 Deleta pergunta específica
     @Delete
-    suspend fun delete(pergunta: PerguntaEntity)
+    suspend fun delete(perguntas: PerguntaEntity)
 
     // 🔹 Deleta pergunta pelo ID
     @Query("DELETE FROM perguntas WHERE id = :id")

@@ -8,8 +8,7 @@
         android:id="@+id/bgImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/imagem1" /> <!-- valor padrão -->
+        android:scaleType="centerCrop" /> <!-- valor padrão -->
 
 
     <!-- Camada de raspadinha -->

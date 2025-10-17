@@ -1,6 +1,7 @@
 package com.example.verdadeoudesafio.data.database
 
 import android.content.Context
+import com.example.verdadeoudesafio.data.AppDatabase
 import com.example.verdadeoudesafio.data.entity.DesafioEntity
 import com.example.verdadeoudesafio.data.entity.PerguntaEntity
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,8 @@ object DatabaseInitializer {
                 val desafios = JSONArray(desafiosJson)
                 for (i in 0 until desafios.length()) {
                     val texto = desafios.getString(i)
-                    db.desafioDao().insert(DesafioEntity(texto = texto))
+                    val tempo = desafios.getInt(i)
+                    db.desafioDao().insert(DesafioEntity(texto = texto, tempo = tempo))
                 }
             }
         }

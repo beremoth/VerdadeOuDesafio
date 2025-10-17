@@ -17,6 +17,7 @@
         android:theme="@style/Theme.VerdadeOuDesafio"
         tools:targetApi="31">
 
+        <!-- Tela inicial do app -->
         <activity
             android:name=".MenuActivity"
             android:exported="true"
@@ -27,20 +28,36 @@
             </intent-filter>
         </activity>
 
+        <!-- Tela de configurações -->
         <activity
             android:name=".SettingsActivity"
             android:exported="true"
             android:theme="@style/Theme.VerdadeOuDesafio" />
 
+        <!-- Tela principal do jogo -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.VerdadeOuDesafio" />
 
-        <activity android:name=".ScratchActivity"
+        <!-- Tela da raspadinha -->
+        <activity
+            android:name=".ScratchActivity"
             android:exported="true"
             android:theme="@style/Theme.VerdadeOuDesafio" />
 
+      <!-- Login do Administrador -->
+        <activity
+            android:name=".LoginAdminActivity"
+            android:exported="true"
+            android:theme="@style/Theme.VerdadeOuDesafio"
+            android:label="Login do Administrador" />
+        <!-- NOVO: Painel Administrativo -->
+        <activity
+            android:name=".PainelAdminActivity"
+            android:exported="true"
+            android:theme="@style/Theme.VerdadeOuDesafio"
+            android:label="Painel Administrativo" />
 
     </application>
 

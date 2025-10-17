@@ -4,7 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "punicoes")
-data class Punicao(
+data class PunicaoEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val texto: String
+    val texto: String,
+    val timestamp: Long = System.currentTimeMillis()
 )

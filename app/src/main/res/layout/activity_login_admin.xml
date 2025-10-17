@@ -21,7 +21,6 @@
         android:hint="Digite a senha"
         android:inputType="textPassword"
         android:padding="12dp"
-        android:background="@drawable/input_background"
         android:textColor="@color/white"
         android:textColorHint="@color/gray"
         android:layout_marginBottom="16dp"/>
