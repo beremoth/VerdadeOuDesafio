@@ -66,7 +66,8 @@ dependencies {
 
     // Dependências específicas para seu jogo
     implementation(libs.androidx.room.runtime)  // Se for usar Room para banco de dados
-    implementation(libs.gson)  // Para processamento JSON
+    implementation(libs.gson)
+    implementation(libs.androidx.room.common.jvm)  // Para processamento JSON
 
     // Testes
     testImplementation(libs.junit)

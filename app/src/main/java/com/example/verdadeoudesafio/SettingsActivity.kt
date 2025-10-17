@@ -55,7 +55,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         fun openAdmin(view: View) {
-            startActivity(Intent(this, AdminActivity::class.java))
+            startActivity(Intent(this, LoginAdminActivity::class.java))
         }
 
 
