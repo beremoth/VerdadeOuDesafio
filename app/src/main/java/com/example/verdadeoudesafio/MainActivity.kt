@@ -20,12 +20,16 @@ import android.os.VibratorManager
 import androidx.core.content.ContextCompat
 import android.Manifest
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.verdadeoudesafio.data.database.AppDatabase
+import com.example.verdadeoudesafio.data.database.DatabaseInitializer
+import kotlinx.coroutines.launch
+
 
 class MainActivity : AppCompatActivity() {
 
     // Variáveis globais
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var dbHelper: DatabaseHelper
     private lateinit var questionText: TextView
     private lateinit var playerText : TextView
     private lateinit var truthButton: Button
@@ -50,6 +54,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val db = AppDatabase.getDatabase(this)
+
+        // Popula o banco apenas se estiver vazio
+        lifecycleScope.launch {
+            DatabaseInitializer.populateDatabaseIfEmpty(this@MainActivity, db)
+        }
+
+
         // Verifica se a permissão já foi concedida
         if (!checkVibrationPermission()) {
             requestVibrationPermission()
@@ -57,7 +69,6 @@ class MainActivity : AppCompatActivity() {
 
 
         // Inicializa os componentes
-        dbHelper = DatabaseHelper(this)
         sharedPreferences = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
         playerText = findViewById(R.id.player_text)
@@ -78,14 +89,6 @@ class MainActivity : AppCompatActivity() {
         currentLevel = sharedPreferences.getInt("selected_level", 2)
         Log.d("MainActivity", "Nível carregado: $currentLevel")
         updateLevelText()
-
-        // Verifica se os dados foram carregados corretamente
-        if (!dbHelper.checkIfDataIsLoaded()) {
-            Toast.makeText(this, "Erro ao carregar perguntas!", Toast.LENGTH_LONG).show()
-            Log.e("MainActivity", "Banco de dados vazio")
-            finish()
-            return
-        }
 
         // Configuração dos botões
         truthButton.setOnClickListener {
@@ -177,21 +180,21 @@ class MainActivity : AppCompatActivity() {
     /**
      * Carrega as perguntas disponíveis para o tipo e nível especificados.
      */
-    private fun loadAvailableQuestions(level: Int) {
-        val allQuestions = dbHelper.getAllQuestions()
+    private suspend fun loadAvailableQuestions(level: Int, db: AppDatabase) {
+        val allPerguntas = db.perguntaDao().getAll()
+        val allDesafios = db.desafioDao().getAll()
 
-        // Limpa as listas existentes
         availableTruthQuestions.clear()
         availableDareQuestions.clear()
 
-        // Filtra as perguntas com base no tipo e no nível
-        availableTruthQuestions.addAll(allQuestions.filter { it.type == "truth" && it.level == level })
-        availableDareQuestions.addAll(allQuestions.filter { it.type == "dare" && it.level == level })
+        // Converter PerguntaEntity e DesafioEntity para a estrutura usada no jogo
+        availableTruthQuestions.addAll(allPerguntas.map { DatabaseHelper.Question(it.texto, "truth", level, null) })
+        availableDareQuestions.addAll(allDesafios.map { DatabaseHelper.Question(it.texto, "dare", level, null) })
 
-        // Logs para depuração
         Log.d("MainActivity", "Perguntas truth carregadas: ${availableTruthQuestions.size}")
         Log.d("MainActivity", "Perguntas dare carregadas: ${availableDareQuestions.size}")
     }
+
 
     /**
      * Obtém uma pergunta aleatória da lista disponível para o tipo especificado.
@@ -222,8 +225,10 @@ class MainActivity : AppCompatActivity() {
      * Exibe uma pergunta aleatória com base no tipo ("verdade" ou "desafio") e no nível.
      */
     private fun showQuestion(type: String, level: Int) {
-        if (availableTruthQuestions.isEmpty() || availableDareQuestions.isEmpty()) {
-            loadAvailableQuestions(level)
+        lifecycleScope.launch {
+            if (availableTruthQuestions.isEmpty() || availableDareQuestions.isEmpty()) {
+                loadAvailableQuestions(level, db)
+            }
         }
 
         val question = getRandomQuestion(type)
@@ -360,11 +365,6 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.VIBRATE), 100)
         }
-    }
-
-    override fun onDestroy() {
-        dbHelper.close()
-        super.onDestroy()
     }
 }
 
