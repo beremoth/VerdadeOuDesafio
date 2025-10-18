@@ -20,7 +20,7 @@ class DataRepository private constructor(context: Context) {
 
     // Desafios
     suspend fun getDesafios(): List<DesafioEntity> = db.desafioDao().getAll()
-    suspend fun addDesafio(texto: String) = db.desafioDao().insert(DesafioEntity(texto = texto, tempo = 0))
+    suspend fun addDesafio(texto: String, tempo: Int) = db.desafioDao().insert(DesafioEntity(texto = texto, tempo = tempo))
     suspend fun updateDesafio(d: DesafioEntity) = db.desafioDao().update(d)
     suspend fun deleteDesafio(d: DesafioEntity) = db.desafioDao().delete(d)
 

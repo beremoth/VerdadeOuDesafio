@@ -23,6 +23,7 @@ import com.example.verdadeoudesafio.data.AppDatabase
 import com.example.verdadeoudesafio.data.database.DatabaseInitializer
 import com.example.verdadeoudesafio.data.entity.DesafioEntity
 import com.example.verdadeoudesafio.data.entity.PerguntaEntity
+import com.example.verdadeoudesafio.data.entity.PunicaoEntity
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     private var availableTruths: MutableList<PerguntaEntity> = mutableListOf()
     private var availableDares: MutableList<DesafioEntity> = mutableListOf()
-    private var availablePunishments: MutableList<String> = mutableListOf()
+    private var availablePunishments: MutableList<PunicaoEntity> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
