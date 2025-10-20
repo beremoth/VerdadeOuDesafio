@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 
 }
 
@@ -65,9 +66,14 @@ dependencies {
     implementation(libs.androidx.material3)
 
     // Dependências específicas para seu jogo
-    implementation(libs.androidx.room.runtime)  // Se for usar Room para banco de dados
+    implementation(libs.androidx.room.runtime)// Se for usar Room para banco de dados
+    implementation(libs.androidx.room.ktx)
     implementation(libs.gson)
-    implementation(libs.androidx.room.common.jvm)  // Para processamento JSON
+    ksp(libs.androidx.room.compiler)
+
+
+
+    // Para processamento JSON
 
     // Testes
     testImplementation(libs.junit)

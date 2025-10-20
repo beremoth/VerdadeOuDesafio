@@ -32,7 +32,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Entendido"
-        android:backgroundTint="#FFBB86FC"
-        android:textColor="@drawable/button_gradient" /> <!-- Cor do texto do botão -->
+        android:background="@drawable/button_gradient" /> <!-- Cor do texto do botão -->
 
 </LinearLayout>
