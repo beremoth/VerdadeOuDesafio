@@ -1,8 +1,9 @@
 package com.example.verdadeoudesafio.data.database
 
 import android.content.Context
-import com.example.verdadeoudesafio.data.database.AppDatabase
-import com.example.verdadeoudesafio.data.entity.*
+import com.example.verdadeoudesafio.data.entity.DesafioEntity
+import com.example.verdadeoudesafio.data.entity.PerguntaEntity
+import com.example.verdadeoudesafio.data.entity.PunicaoEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -49,6 +50,7 @@ object DatabaseInitializer {
                     db.punicaoDao().insert(PunicaoEntity(texto = text, level = level))
                 }
             }
+
         }
     }
 
