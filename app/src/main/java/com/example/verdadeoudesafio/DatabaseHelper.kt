@@ -51,7 +51,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val resourceId = mContext.resources.getIdentifier(
                 "truth_or_dare", "raw", mContext.packageName)
             if (resourceId == 0) {
-                throw Exception("Arquivo JSON não encontrado em res/raw")
+                throw Exception("Arquivo JSON não encontrado em res/assets")
             }
             val inputStream = mContext.resources.openRawResource(resourceId)
             val jsonString = inputStream.bufferedReader().use { it.readText() }

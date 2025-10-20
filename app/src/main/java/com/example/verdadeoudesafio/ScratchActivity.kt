@@ -10,9 +10,9 @@ class ScratchActivity : AppCompatActivity() {
 
     // Lista de imagens que serão escolhidas aleatoriamente
     private val imagens = listOf(
-        R.raw.imagem1,
-        R.raw.imagem2,
-        R.raw.imagem3
+        R.assets.imagem1,
+        R.assets.imagem2,
+        R.assets.imagem3
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
