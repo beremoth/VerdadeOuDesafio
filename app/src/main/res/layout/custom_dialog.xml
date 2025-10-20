@@ -22,7 +22,7 @@
         android:id="@+id/dialogMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/bem_vindo_ao_verdade_ou_desafio_n_n_1_escolha_entre_verdade_ou_desafio_n_2_o_aplicativo_exibir_uma_pergunta_ou_desafio_aleat_rio_com_base_no_n_vel_selecionado_n_3_use_o_bot_o_n_vel_para_ajustar_o_n_vel_das_perguntas_n_leve_perguntas_desafios_simples_n_moderado_perguntas_desafios_m_dios_n_extremo_perguntas_desafios_intensos_n_4_se_n_o_quiser_responder_clique_em_pular_para_receber_uma_consequ_ncia_n_n_divirta_se"
+        android:text="@string/Intrucoes"
         android:textSize="14sp"
         android:textColor="#FFFFFF"
         android:paddingBottom="16dp"/>

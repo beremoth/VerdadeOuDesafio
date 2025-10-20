@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">Verdade ou Desafio</string>
     <string name="escolha_verdade_ou_desafio">Escolha \'Verdade\' ou \'Desafio\'!</string>
-    <string name="bem_vindo_ao_verdade_ou_desafio_n_n_1_escolha_entre_verdade_ou_desafio_n_2_o_aplicativo_exibir_uma_pergunta_ou_desafio_aleat_rio_com_base_no_n_vel_selecionado_n_3_use_o_bot_o_n_vel_para_ajustar_o_n_vel_das_perguntas_n_leve_perguntas_desafios_simples_n_moderado_perguntas_desafios_m_dios_n_extremo_perguntas_desafios_intensos_n_4_se_n_o_quiser_responder_clique_em_pular_para_receber_uma_consequ_ncia_n_n_divirta_se">Bem-vindo ao Verdade ou Desafio!\n\n 1. Escolha entre \'Verdade\' ou \'Desafio\'.\n 2. O aplicativo exibirá uma pergunta ou desafio aleatório com base no nível selecionado.\n 3. Use o botão \'Nível\' para ajustar o nível das perguntas:\n - Leve: Perguntas/desafios simples.\n - Moderado: Perguntas/desafios médios.\n - Extremo: Perguntas/desafios intensos.\n 4. Se não quiser responder, clique em \'Pular\' para receber uma consequência.\n\n Divirta-se!</string>
+    <string name="Intrucoes">Bem vindo ao Verdade ou Desafio!\n\n
+        1. Escolha entre Verdade ou Desafio.\n
+        2. O aplicativo exibirá uma pergunta ou desafio aleatório com base no nível selecionado.\n
+        3. Use o botão \"Nível\" para ajustar o nível das perguntas:\n
+           - Leve: Perguntas/Desafios simples.\n
+           - Moderado: Perguntas/Desafios médios.\n
+           - Extremo: Perguntas/Desafios intensos.\n
+        4. Se não quiser responder, clique em \"Pular\" para receber uma consequência.\n\n
+        Divirta-se!</string>
     <string name="digite_o_n_vel_1_2_ou_3">Digite o nível (1, 2 ou 3)</string>
 </resources>

@@ -134,8 +134,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@drawable/small_circle"
-      android:foreground="?attr/selectableItemBackground"
-      android:onClick="openSettings"/>
+      android:foreground="?attr/selectableItemBackground"/>
 
   <!-- Ícone da engrenagem sobreposto ao botão -->
   <ImageView
