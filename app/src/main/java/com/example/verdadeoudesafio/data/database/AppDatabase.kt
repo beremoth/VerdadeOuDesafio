@@ -12,7 +12,7 @@ import com.example.verdadeoudesafio.data.entity.*
         PunicaoEntity::class,
         RaspadinhaEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

@@ -9,6 +9,9 @@ interface PunicaoDao {
     @Query("SELECT * FROM punicoes ORDER BY timestamp DESC")
     suspend fun getAll(): List<PunicaoEntity>
 
+    @Query("SELECT * FROM punicoes WHERE level = :level")
+    suspend fun getByLevel(level: Int): List<PunicaoEntity>
+
     @Insert
     suspend fun insert(pergunta: PunicaoEntity)
 

@@ -15,7 +15,7 @@ class PerguntaAdminFragment : BaseAdminFragment() {
     }
 
     override suspend fun addItem(text: String) {
-        db.perguntaDao().insert(PerguntaEntity(texto = text))
+        db.perguntaDao().insert(PerguntaEntity(texto = text, level = 1))
     }
 
     override suspend fun editItem(index: Int, text: String) {

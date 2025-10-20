@@ -23,6 +23,7 @@ import com.example.verdadeoudesafio.data.AppDatabase
 import com.example.verdadeoudesafio.data.database.DatabaseInitializer
 import com.example.verdadeoudesafio.data.entity.DesafioEntity
 import com.example.verdadeoudesafio.data.entity.PerguntaEntity
+import com.example.verdadeoudesafio.data.entity.PunicaoEntity
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -44,12 +45,12 @@ class MainActivity : AppCompatActivity() {
     private var currentPlayerIndex = 0
     private var currentLevel = 2
     private var currentTimer: CountDownTimer? = null
-    private var currentQuestionDuration: Int? = null
+    private var currentQuestionDuration: Int = 0
     private var isGameStarted = false
 
     private var availableTruths: MutableList<PerguntaEntity> = mutableListOf()
     private var availableDares: MutableList<DesafioEntity> = mutableListOf()
-    private var availablePunishments: MutableList<String> = mutableListOf()
+    private var availablePunishments: MutableList<PunicaoEntity> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,7 +100,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         startTimerButton.setOnClickListener {
-            currentQuestionDuration?.let { startTimer(it) }
+            if (currentQuestionDuration > 0) {
+                startTimer(currentQuestionDuration)
+            }
         }
 
         startTimerButton.visibility = View.GONE
@@ -150,13 +153,20 @@ class MainActivity : AppCompatActivity() {
         if (availableDares.isEmpty()) {
             availableDares = db.desafioDao().getAll().toMutableList()
         }
+        if (availablePunishments.isEmpty()) {
+            availablePunishments = db.punicaoDao().getAll().toMutableList()
+        }
     }
 
     private fun showQuestion(type: String) {
         lifecycleScope.launch {
             loadQuestionsIfNeeded()
+            currentTimer?.cancel()
+            timerText.visibility = View.GONE
+            startTimerButton.visibility = View.GONE
 
             val questionTextValue = when (type) {
+
                 "truth" -> {
                     if (availableTruths.isNotEmpty()) {
                         val randomIndex = Random.nextInt(availableTruths.size)
@@ -170,8 +180,11 @@ class MainActivity : AppCompatActivity() {
                         val randomIndex = Random.nextInt(availableDares.size)
                         val desafio = availableDares.removeAt(randomIndex)
                         currentQuestionDuration = desafio.tempo
-                        if (desafio.tempo != null && desafio.tempo > 0) {
-                            timerText.text = String.format("%02d:%02d",desafio.tempo / 60,desafio.tempo % 60)
+
+                        if (desafio.tempo > 0) {
+                            val min = desafio.tempo / 60
+                            val sec = desafio.tempo % 60
+                            timerText.text = String.format("%02d:%02d", min, sec)
                             timerText.visibility = View.VISIBLE
                             startTimerButton.visibility = View.VISIBLE
                         } else {
@@ -190,37 +203,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showPunishment() {
-        loadAvailablePunishmentsIfNeeded()
-        val punishment = if (availablePunishments.isNotEmpty()) {
-            availablePunishments.removeAt(Random.nextInt(availablePunishments.size))
-        } else "Sem punições disponíveis!"
-        questionText.text = "PUNIÇÃO:\n$punishment"
-    }
-
-    private fun loadAvailablePunishmentsIfNeeded() {
-        if (availablePunishments.isEmpty()) {
-            availablePunishments.addAll(
-                when (currentLevel) {
-                    1 -> listOf(
-                        "Imite um animal por 30 segundos.",
-                        "Fale com sotaque até sua próxima rodada.",
-                        "Cante um trecho de uma música infantil."
-                    )
-                    2 -> listOf(
-                        "Envie uma mensagem embaraçosa a alguém.",
-                        "Dance uma música por 1 minuto.",
-                        "Conte um segredo do passado."
-                    )
-                    3 -> listOf(
-                        "Simule uma cena de filme romântico.",
-                        "Faça uma dança provocante.",
-                        "Beije alguém na bochecha (ou mais, se o grupo permitir)."
-                    )
-                    else -> listOf("Sem punições disponíveis!")
-                }
-            )
+        lifecycleScope.launch {
+            val punicoes = db.punicaoDao().getByLevel(currentLevel)
+            if (punicoes.isNotEmpty()) {
+                val randomPunishment = punicoes.random().texto
+                questionText.text = "PUNIÇÃO:\n$randomPunishment"
+            } else {
+                questionText.text = "Sem punições disponíveis!"
+            }
         }
     }
+
 
     private fun startTimer(duration: Int) {
         currentTimer?.cancel()

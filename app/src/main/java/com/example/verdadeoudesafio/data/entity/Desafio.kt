@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class DesafioEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val texto: String,
-    val tempo: Int,
+    val level: Int,
+    val tempo: Int = 0,
     val timestamp: Long = System.currentTimeMillis()
 )

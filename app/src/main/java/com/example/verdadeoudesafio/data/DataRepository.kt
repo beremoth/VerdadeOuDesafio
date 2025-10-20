@@ -14,19 +14,20 @@ class DataRepository private constructor(context: Context) {
 
     // Perguntas
     suspend fun getPerguntas(): List<PerguntaEntity> = db.perguntaDao().getAll()
-    suspend fun addPergunta(texto: String) = db.perguntaDao().insert(PerguntaEntity(texto = texto))
+    suspend fun addPergunta(texto: String, level: Int) = db.perguntaDao().insert(PerguntaEntity(
+        texto = texto, level = level))
     suspend fun updatePergunta(p: PerguntaEntity) = db.perguntaDao().update(p)
     suspend fun deletePergunta(p: PerguntaEntity) = db.perguntaDao().delete(p)
 
     // Desafios
     suspend fun getDesafios(): List<DesafioEntity> = db.desafioDao().getAll()
-    suspend fun addDesafio(texto: String) = db.desafioDao().insert(DesafioEntity(texto = texto, tempo = 0))
+    suspend fun addDesafio(texto: String, tempo: Int, level: Int) = db.desafioDao().insert(DesafioEntity(texto = texto, tempo = tempo, level = level))
     suspend fun updateDesafio(d: DesafioEntity) = db.desafioDao().update(d)
     suspend fun deleteDesafio(d: DesafioEntity) = db.desafioDao().delete(d)
 
     // Punições
     suspend fun getPunicoes(): List<PunicaoEntity> = db.punicaoDao().getAll()
-    suspend fun addPunicao(texto: String) = db.punicaoDao().insert(PunicaoEntity(texto = texto))
+    suspend fun addPunicao(texto: String,level: Int) = db.punicaoDao().insert(PunicaoEntity(texto = texto, level = level))
 
     // Raspadinhas
     // Raspadinhas

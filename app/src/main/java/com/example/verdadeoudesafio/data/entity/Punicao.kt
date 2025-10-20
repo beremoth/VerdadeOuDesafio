@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class PunicaoEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val texto: String,
+    val level: Int,
     val timestamp: Long = System.currentTimeMillis()
 )

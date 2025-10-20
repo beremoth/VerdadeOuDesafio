@@ -162,5 +162,46 @@
       "level": 3,
       "duration": 180
     }
-  ]
+  ],
+  "punishments": [
+    {
+      "text": "Beba um gole de algo forte.",
+      "level": 1
+    },
+    {
+      "text": "Imite um animal por 30 segundos.",
+      "level": 1
+    },
+    {
+      "text": "Fale com sotaque até sua próxima rodada.",
+      "level": 1
+    },
+    {
+      "text": "Cante um trecho de uma música infantil.",
+      "level": 1
+    },
+    {
+     "text": "Envie uma mensagem embaraçosa a alguém.",
+      "level": 2},
+    {
+     "text": "Dance uma música por 1 minuto.",
+      "level" : 2
+    },
+    {
+      "text":"Conte um segredo do passado.",
+      "level": 2
+    },
+    {
+      "text":"Simule uma cena de filme romântico.",
+      "level": 3
+    },
+    {
+      "text": "Faça uma dança provocante.",
+      "level": 3
+    },
+    {
+      "text":  "Beije alguém na bochecha (ou mais, se o grupo permitir).",
+      "level": 3
+    }
+    ]
 }
