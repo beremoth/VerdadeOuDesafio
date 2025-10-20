@@ -13,15 +13,17 @@ class MenuActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         // Infla o layout activity_menu.xml
         binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // botão para verdade ou desafio
         binding.startButton.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
-        // botão para rapadinha
+                // botão para rapadinha
         binding.btnRaspadinha.setOnClickListener {
             val intent = Intent(this, ScratchActivity::class.java)
             startActivity(intent)
@@ -51,7 +53,8 @@ class MenuActivity : AppCompatActivity() {
         }
 
         binding.settingsButton.setOnClickListener {
-            startActivity(SettingsActivity.getIntent(this))
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
     }
 }

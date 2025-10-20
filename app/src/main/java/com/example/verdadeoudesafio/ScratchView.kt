@@ -24,7 +24,7 @@ class ScratchView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         style = Paint.Style.STROKE
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND
-        strokeWidth = 350f
+        strokeWidth = 250f
         xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
     }
 

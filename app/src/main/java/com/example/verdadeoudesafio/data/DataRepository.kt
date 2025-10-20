@@ -2,6 +2,7 @@ package com.example.verdadeoudesafio.data
 
 import android.content.Context
 import androidx.room.Room
+import com.example.verdadeoudesafio.data.database.AppDatabase
 import com.example.verdadeoudesafio.data.entity.*
 
 class DataRepository private constructor(context: Context) {
@@ -14,8 +15,7 @@ class DataRepository private constructor(context: Context) {
 
     // Perguntas
     suspend fun getPerguntas(): List<PerguntaEntity> = db.perguntaDao().getAll()
-    suspend fun addPergunta(texto: String, level: Int) = db.perguntaDao().insert(PerguntaEntity(
-        texto = texto, level = level))
+    suspend fun addPergunta(texto: String, level: Int) = db.perguntaDao().insert(PerguntaEntity(texto = texto, level = level))
     suspend fun updatePergunta(p: PerguntaEntity) = db.perguntaDao().update(p)
     suspend fun deletePergunta(p: PerguntaEntity) = db.perguntaDao().delete(p)
 

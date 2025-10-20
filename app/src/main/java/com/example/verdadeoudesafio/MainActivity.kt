@@ -19,7 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
-import com.example.verdadeoudesafio.data.AppDatabase
+import com.example.verdadeoudesafio.data.database.AppDatabase
 import com.example.verdadeoudesafio.data.database.DatabaseInitializer
 import com.example.verdadeoudesafio.data.entity.DesafioEntity
 import com.example.verdadeoudesafio.data.entity.PerguntaEntity

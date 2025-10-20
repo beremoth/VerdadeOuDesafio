@@ -1,7 +1,7 @@
 package com.example.verdadeoudesafio.admin
 
 import androidx.room.Room
-import com.example.verdadeoudesafio.data.AppDatabase
+import com.example.verdadeoudesafio.data.database.AppDatabase
 import com.example.verdadeoudesafio.data.entity.PerguntaEntity
 
 class PerguntaAdminFragment : BaseAdminFragment() {

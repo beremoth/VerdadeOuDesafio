@@ -1,7 +1,7 @@
 package com.example.verdadeoudesafio.data.database
 
 import android.content.Context
-import com.example.verdadeoudesafio.data.AppDatabase
+import com.example.verdadeoudesafio.data.database.AppDatabase
 import com.example.verdadeoudesafio.data.entity.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
