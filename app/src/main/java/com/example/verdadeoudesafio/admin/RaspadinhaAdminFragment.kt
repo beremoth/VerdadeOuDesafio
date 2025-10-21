@@ -36,8 +36,8 @@ class RaspadinhaAdminFragment : Fragment() {
 
     private lateinit var adapter: RaspadinhaAdminAdapter
 
-    private val db by lazy {
-        AppDatabase.getDatabase(requireContext().applicationContext)
+    protected val db by lazy {
+        AppDatabase.getDatabase(requireContext().applicationContext, lifecycleScope)
     }
 
     // --- Permissões e seletor de imagem ---

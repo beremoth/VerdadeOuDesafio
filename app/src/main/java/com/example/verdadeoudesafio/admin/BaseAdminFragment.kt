@@ -22,7 +22,7 @@ abstract class BaseAdminFragment<T : TextLevelItem> : Fragment() {
     protected lateinit var adapter: AdminItemAdapter<T>
 
     protected val db by lazy {
-        AppDatabase.getDatabase(requireContext().applicationContext)
+        AppDatabase.getDatabase(requireContext().applicationContext, lifecycleScope)
     }
 
     // Métodos abstratos que os "filhos" (PerguntaAdminFragment, etc.) vão implementar

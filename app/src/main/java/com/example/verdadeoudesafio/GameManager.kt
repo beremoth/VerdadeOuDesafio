@@ -6,7 +6,7 @@ import com.example.verdadeoudesafio.data.entity.PerguntaEntity
 import com.example.verdadeoudesafio.data.entity.PunicaoEntity
 import com.example.verdadeoudesafio.data.entity.RaspadinhaEntity
 
-class GameManager( db: AppDatabase) {
+class GameManager(db: AppDatabase) { // Removido 'private val'
 
     private val perguntaDao = db.perguntaDao()
     private val desafioDao = db.desafioDao()
@@ -14,19 +14,19 @@ class GameManager( db: AppDatabase) {
     private val raspadinhaDao = db.raspadinhaDao()
 
     suspend fun getRandomPergunta(level: Int): PerguntaEntity? {
-        // Agora chama a função correta
         return perguntaDao.getRandomByLevel(level)
     }
 
     suspend fun getRandomDesafio(level: Int): DesafioEntity? {
-        // Agora chama a função correta
         return desafioDao.getRandomByLevel(level)
     }
 
+
     suspend fun getRandomPunicao(level: Int): PunicaoEntity? {
-        // Agora chama a função correta
+        // E precisa chamar a função correta
         return punicaoDao.getRandomByLevel(level)
     }
+    // --- FIM DA CORREÇÃO ---
 
     suspend fun getRandomRaspadinha(): RaspadinhaEntity? {
         return raspadinhaDao.getRandom()
