@@ -2,34 +2,41 @@ package com.example.verdadeoudesafio.admin
 
 import androidx.room.Room
 import com.example.verdadeoudesafio.data.database.AppDatabase
-import com.example.verdadeoudesafio.data.entity.PunicaoEntity
+import com.example.verdadeoudesafio.data.entity.PerguntaEntity
 
-// 1. Mude para herdar de BaseAdminFragment
-class PunicaoAdminFragment : BaseAdminFragment() {
+class PerguntaAdminFragment : BaseAdminFragment() {
 
-    // 2. Adicione a instância do DB (com o NOME CORRETO)
     private val db by lazy {
-        Room.databaseBuilder(requireContext(), AppDatabase::class.java, "verdade_ou_desafio_db")
-            .build()
+        Room.databaseBuilder(requireContext(), AppDatabase::class.java, "verdade_ou_desafio_db").build()
     }
 
-    // 3. Implemente os métodos para gerenciar Punições
-    override suspend fun loadItems(): List<String> {
-        return db.punicaoDao().getAll().map { it.texto }
+    // Sobrescreve para definir o título
+    override fun getFragmentTitle(): String = "Gerenciar Perguntas"
+
+    // Retorna a lista de TextLevelItem
+    override suspend fun loadItems(): List<TextLevelItem> {
+        return db.perguntaDao().getAll() // O DAO retorna List<PerguntaEntity>, que implementa TextLevelItem
     }
 
-    override suspend fun addItem(text: String) {
-        db.punicaoDao().insert(PunicaoEntity(texto = text, level = 1))
+    // Implementa addItem com os novos parâmetros
+    override suspend fun addItem(text: String, level: Int, tempo: Int?) { // tempo é ignorado aqui
+        db.perguntaDao().insert(PerguntaEntity(texto = text, level = level)) // [cite: 21]
     }
 
-    override suspend fun editItem(index: Int, text: String) {
-        val list = db.punicaoDao().getAll()
-        val item = list[index]
-        db.punicaoDao().update(item.copy(texto = text))
+    // Implementa editItem com os novos parâmetros
+    override suspend fun editItem(item: TextLevelItem, newText: String, newLevel: Int, newTempo: Int?) { // newLevel e newTempo são ignorados aqui
+        if (item is PerguntaEntity) { // Verifica se o item é do tipo correto
+            // Cria uma cópia com o novo texto, mas mantém o ID e nível originais
+            // Se quiser permitir editar o nível, use: item.copy(texto = newText, level = newLevel)
+            val updatedItem = item.copy(texto = newText, level = newLevel)
+            db.perguntaDao().update(updatedItem)
+        }
     }
 
-    override suspend fun deleteItem(index: Int) {
-        val list = db.punicaoDao().getAll()
-        db.punicaoDao().delete(list[index])
+    // Implementa deleteItem com TextLevelItem
+    override suspend fun deleteItem(item: TextLevelItem) {
+        if (item is PerguntaEntity) {
+            db.perguntaDao().delete(item)
+        }
     }
 }

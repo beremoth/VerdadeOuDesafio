@@ -9,9 +9,5 @@ data class DesafioEntity(
     @PrimaryKey(autoGenerate = true) override val id: Int = 0,
     override val texto: String,
     override val level: Int,
-    val tempo: Int // Campo original
-) : TextLevelItem { // Implementa a interface
-    // Sobrescreve 'tempo' da interface para retornar o valor real
-    override val tempo: Int?
-        get() = this.tempo
-}
+    override val tempo: Int // Campo original
+) : TextLevelItem
