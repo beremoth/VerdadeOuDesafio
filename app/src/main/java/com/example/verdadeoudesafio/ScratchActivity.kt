@@ -13,29 +13,27 @@ import com.example.verdadeoudesafio.data.database.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File // Importação MUITO importante
 import java.io.IOException
 
 /**
- * 1. CLASSE AUXILIAR
- * Define a origem da imagem: da pasta 'assets' (padrão) ou do Banco de Dados (admin).
- * (Pode colocar esta classe no mesmo arquivo, mas fora da classe ScratchActivity)
+ * Classe auxiliar (está correta, não mude)
  */
 sealed class ImageSource {
-    data class Asset(val fileName: String) : ImageSource() // Imagem da pasta assets
-    data class Path(val uriString: String) : ImageSource()  // Imagem do banco (galeria)
+    data class Asset(val fileName: String) : ImageSource()
+    data class Path(val filePath: String) : ImageSource() // Mudei o nome para 'filePath' para ficar mais claro
 }
 
 class ScratchActivity : AppCompatActivity() {
 
-    // 2. LISTA DE IMAGENS PADRÃO
-    // Lista dos NOMES dos arquivos que estão na sua pasta 'assets'
+    // Lista de imagens padrão (está correta)
     private val defaultAssetImages = listOf(
         "imagem1.jpg",
         "imagem2.jpg",
         "imagem3.jpg"
     )
 
-    // Instância do Banco de Dados
+    // Instância do DB (está correta)
     private val db by lazy {
         Room.databaseBuilder(
             applicationContext,
@@ -51,22 +49,17 @@ class ScratchActivity : AppCompatActivity() {
         val bgImage = findViewById<ImageView>(R.id.bgImage)
         val scratchView = findViewById<ScratchView>(R.id.scratchView)
 
-        // 3. INICIA A LÓGICA DE CARREGAMENTO
         lifecycleScope.launch {
-            // Busca uma fonte de imagem aleatória (do assets OU do banco)
             val imageSource = getImagemAleatoria()
 
             if (imageSource == null) {
                 Log.e("ScratchActivity", "Nenhuma imagem encontrada (nem no assets, nem no DB).")
-                // TODO: Colocar uma imagem de erro padrão aqui
                 return@launch
             }
 
-            // 4. CARREGA A IMAGEM (A PARTE IMPORTANTE)
-            // Agora verificamos a ORIGEM da imagem para saber como carregá-la
             try {
                 when (imageSource) {
-                    // Se for do ASSETS, usamos a lógica de assets
+                    // Se for do ASSETS, usamos a lógica de assets (está correto)
                     is ImageSource.Asset -> {
                         Log.d("ScratchActivity", "Carregando do Assets: ${imageSource.fileName}")
                         val inputStream = assets.open(imageSource.fileName)
@@ -74,27 +67,37 @@ class ScratchActivity : AppCompatActivity() {
                         bgImage.setImageBitmap(bitmap)
                         inputStream.close()
                     }
-                    // Se for do BANCO, usamos a lógica de URI (caminho)
+
+                    // ### A MUDANÇA ESTÁ AQUI ###
+                    // Se for do BANCO (agora um caminho de arquivo), usamos a lógica de File
                     is ImageSource.Path -> {
-                        Log.d("ScratchActivity", "Carregando do DB/Path: ${imageSource.uriString}")
-                        bgImage.setImageURI(Uri.parse(imageSource.uriString))
+                        Log.d("ScratchActivity", "Carregando do DB/Path: ${imageSource.filePath}")
+
+                        // 1. Cria um objeto File a partir do caminho salvo no DB
+                        val file = File(imageSource.filePath)
+
+                        // 2. Cria um URI a partir do File
+                        val uri = Uri.fromFile(file)
+
+                        // 3. Define o URI no ImageView
+                        bgImage.setImageURI(uri)
                     }
                 }
-            } catch (e: IOException) { // Trata erros como FileNotFoundException
+            } catch (e: IOException) {
                 e.printStackTrace()
                 Log.e("ScratchActivity", "Erro ao carregar a imagem: ${e.message}")
-                // TODO: Colocar imagem de erro padrão
             }
         }
 
-        // Configura a raspadinha (isso permanece igual)
+        // Configura a raspadinha
         scratchView.post {
             scratchView.setOverlayColor(Color.GRAY)
         }
     }
 
     /**
-     * Esta função junta as imagens do Assets e do Banco de Dados e sorteia uma.
+     * Esta função junta as imagens e sorteia uma.
+     * (Corrigi para usar o nome 'filePath' da classe selada)
      */
     private suspend fun getImagemAleatoria(): ImageSource? {
         return withContext(Dispatchers.IO) {

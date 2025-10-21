@@ -13,6 +13,7 @@ import androidx.core.content.edit
 class SettingsActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var saveButton: Button
+    private lateinit var btnAdmin: Button
     private lateinit var playersContainer: LinearLayout
     private lateinit var addPlayerButton: Button
     private lateinit var playerNameInput: EditText
@@ -31,6 +32,8 @@ class SettingsActivity : AppCompatActivity() {
         addPlayerButton = findViewById(R.id.addPlayerButton)
         playerNameInput = findViewById(R.id.playerNameInput)
         saveButton = findViewById(R.id.saveButton)
+        btnAdmin = findViewById(R.id.btn_admin)
+
 
         // Carrega o nível salvo
         val savedLevel = sharedPreferences.getInt("selected_level", 2)
@@ -54,16 +57,19 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        fun openAdmin(view: View) {
-            startActivity(Intent(this, LoginAdminActivity::class.java))
+
+        btnAdmin.setOnClickListener {
+            openAdmin(View(this))
         }
-
-
 
         // Salva as configurações ao clicar no botão "Salvar"
         saveButton.setOnClickListener {
             saveSettings()
         }
+    }
+
+    fun openAdmin(view: View) {
+        startActivity(Intent(this, LoginAdminActivity::class.java))
     }
 
     private fun loadPlayers() {

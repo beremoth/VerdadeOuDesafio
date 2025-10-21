@@ -108,7 +108,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/small_circle"
             android:foreground="?attr/selectableItemBackground"
-            android:onClick="openAdmin" />
+            />
 
         <!-- Ícone da chave -->
         <ImageView

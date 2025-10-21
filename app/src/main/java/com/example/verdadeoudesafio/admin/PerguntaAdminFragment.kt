@@ -7,7 +7,7 @@ import com.example.verdadeoudesafio.data.entity.PerguntaEntity
 class PerguntaAdminFragment : BaseAdminFragment() {
 
     private val db by lazy {
-        Room.databaseBuilder(requireContext(), AppDatabase::class.java, "game.db").build()
+        Room.databaseBuilder(requireContext(), AppDatabase::class.java, "verdade_ou_desafio_db").build()
     }
 
     override suspend fun loadItems(): List<String> {
