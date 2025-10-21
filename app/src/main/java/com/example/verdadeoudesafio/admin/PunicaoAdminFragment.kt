@@ -1,44 +1,96 @@
 package com.example.verdadeoudesafio.admin
 
-import androidx.room.Room
-import com.example.verdadeoudesafio.data.database.AppDatabase
-import com.example.verdadeoudesafio.data.entity.PerguntaEntity
+import android.view.LayoutInflater
+import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
+import com.example.verdadeoudesafio.R
+import com.example.verdadeoudesafio.data.entity.PunicaoEntity
+import com.example.verdadeoudesafio.databinding.DialogAddEditItemBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-class PerguntaAdminFragment : BaseAdminFragment() {
+class PunicaoAdminFragment : BaseAdminFragment<PunicaoEntity>() {
 
-    private val db by lazy {
-        Room.databaseBuilder(requireContext(), AppDatabase::class.java, "verdade_ou_desafio_db")
-            .fallbackToDestructiveMigration()
-            .build()
-    }
+    override val fragmentTitle: String
+        get() = "Gerenciar Punições"
 
-    // Sobrescreve para definir o título
-    override fun getFragmentTitle(): String = "Gerenciar Perguntas"
+    private val punicaoDao by lazy { db.punicaoDao() }
 
-    // Retorna a lista de TextLevelItem
-    override suspend fun loadItems(): List<TextLevelItem> {
-        return db.perguntaDao().getAll() // O DAO retorna List<PerguntaEntity>, que implementa TextLevelItem
-    }
-
-    // Implementa addItem com os novos parâmetros
-    override suspend fun addItem(text: String, level: Int, tempo: Int?) { // tempo é ignorado aqui
-        db.perguntaDao().insert(PerguntaEntity(texto = text, level = level)) // [cite: 21]
-    }
-
-    // Implementa editItem com os novos parâmetros
-    override suspend fun editItem(item: TextLevelItem, newText: String, newLevel: Int, newTempo: Int?) { // newLevel e newTempo são ignorados aqui
-        if (item is PerguntaEntity) { // Verifica se o item é do tipo correto
-            // Cria uma cópia com o novo texto, mas mantém o ID e nível originais
-            // Se quiser permitir editar o nível, use: item.copy(texto = newText, level = newLevel)
-            val updatedItem = item.copy(texto = newText, level = newLevel)
-            db.perguntaDao().update(updatedItem)
+    override fun setupViewModelObservers() {
+        lifecycleScope.launch {
+            punicaoDao.getAllFlow().collectLatest { punicoes ->
+                adapter.submitList(punicoes)
+            }
         }
     }
 
-    // Implementa deleteItem com TextLevelItem
-    override suspend fun deleteItem(item: TextLevelItem) {
-        if (item is PerguntaEntity) {
-            db.perguntaDao().delete(item)
+    override fun setupViews() {
+        binding.btnAddItem.setOnClickListener {
+            showAddEditDialog(null)
         }
+    }
+
+    override suspend fun deleteItemFromDb(item: PunicaoEntity) {
+        punicaoDao.delete(item)
+    }
+
+    override fun showAddEditDialog(item: PunicaoEntity?) {
+        val dialogBinding = DialogAddEditItemBinding.inflate(LayoutInflater.from(context))
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(if (item == null) "Adicionar Punição" else "Editar Punição")
+            .setView(dialogBinding.root)
+            .setPositiveButton("Salvar", null)
+            .setNegativeButton("Cancelar", null)
+            .create()
+
+        // Esconde o campo de tempo
+        dialogBinding.tilTempo.visibility = View.GONE
+
+        item?.let {
+            dialogBinding.etTexto.setText(it.text)
+            val radioId = when (it.level) {
+                1 -> R.id.rbLeve
+                2 -> R.id.rbModerado
+                else -> R.id.rbExtremo
+            }
+            dialogBinding.radioGroupLevel.check(radioId)
+        }
+
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val texto = dialogBinding.etTexto.text.toString().trim()
+                val level = when (dialogBinding.radioGroupLevel.checkedRadioButtonId) {
+                    R.id.rbLeve -> 1
+                    R.id.rbModerado -> 2
+                    R.id.rbExtremo -> 3
+                    else -> 0
+                }
+
+                if (texto.isEmpty()) {
+                    dialogBinding.etTexto.error = "O texto não pode ser vazio"
+                    return@setOnClickListener
+                }
+                if (level == 0) {
+                    return@setOnClickListener
+                }
+
+                val newItem = PunicaoEntity(
+                    id = item?.id ?: 0,
+                    text = texto,
+                    level = level
+                )
+
+                lifecycleScope.launch {
+                    if (item == null) {
+                        punicaoDao.insert(newItem)
+                    } else {
+                        punicaoDao.update(newItem)
+                    }
+                }
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
     }
 }

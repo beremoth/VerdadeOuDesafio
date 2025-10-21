@@ -10,6 +10,7 @@ class PainelAdminActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPainelAdminBinding
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPainelAdminBinding.inflate(layoutInflater)
@@ -22,6 +23,7 @@ class PainelAdminActivity : AppCompatActivity() {
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = titles[position]
+
         }.attach()
 
         supportActionBar?.title = "Painel Administrativo"

@@ -2,7 +2,7 @@ package com.example.verdadeoudesafio.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.verdadeoudesafio.admin.TextLevelItem
+import com.example.verdadeoudesafio.admin.TextLeveItem
 
 @Entity(tableName = "punicoes")
 data class PunicaoEntity(
@@ -10,4 +10,4 @@ data class PunicaoEntity(
     override val texto: String,
     override val level: Int,
     val timestamp: Long = System.currentTimeMillis()
-): TextLevelItem
+): TextLeveItem

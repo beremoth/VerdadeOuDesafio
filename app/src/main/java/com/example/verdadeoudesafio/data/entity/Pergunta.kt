@@ -2,7 +2,7 @@ package com.example.verdadeoudesafio.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.verdadeoudesafio.admin.TextLevelItem
+import com.example.verdadeoudesafio.admin.TextLeveItem
 
 @Entity(tableName = "perguntas")
 data class PerguntaEntity(
@@ -10,5 +10,5 @@ data class PerguntaEntity(
     @PrimaryKey(autoGenerate = true) override val id: Int = 0,
     override val texto: String,
     override val level: Int,
-): TextLevelItem
+): TextLeveItem
 

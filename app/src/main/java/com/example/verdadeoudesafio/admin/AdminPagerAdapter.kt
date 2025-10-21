@@ -11,6 +11,7 @@ class AdminPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activ
         DesafioAdminFragment(),
         PunicaoAdminFragment(),
         RaspadinhaAdminFragment()
+
     )
 
     override fun getItemCount(): Int = fragments.size
