@@ -21,11 +21,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.example.verdadeoudesafio.data.database.AppDatabase
 import com.example.verdadeoudesafio.data.database.DatabaseInitializer
-import com.example.verdadeoudesafio.data.entity.DesafioEntity
-import com.example.verdadeoudesafio.data.entity.PerguntaEntity
-import com.example.verdadeoudesafio.data.entity.PunicaoEntity
+import com.example.verdadeoudesafio.game.GameManager
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var timerText: TextView
     private lateinit var startTimerButton: Button
     private lateinit var db: AppDatabase
+    private val gameManager by lazy { GameManager(this) }
 
     private var players: MutableList<String> = mutableListOf()
     private var currentPlayerIndex = 0
@@ -48,9 +46,7 @@ class MainActivity : AppCompatActivity() {
     private var currentQuestionDuration: Int = 0
     private var isGameStarted = false
 
-    private var availableTruths: MutableList<PerguntaEntity> = mutableListOf()
-    private var availableDares: MutableList<DesafioEntity> = mutableListOf()
-    private var availablePunishments: MutableList<PunicaoEntity> = mutableListOf()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,39 +142,24 @@ class MainActivity : AppCompatActivity() {
         currentLevel = sharedPreferences.getInt("selected_level", 2)
     }
 
-    private suspend fun loadQuestionsIfNeeded() {
-        if (availableTruths.isEmpty()) {
-            availableTruths = db.perguntaDao().getAll().toMutableList()
-        }
-        if (availableDares.isEmpty()) {
-            availableDares = db.desafioDao().getAll().toMutableList()
-        }
-        if (availablePunishments.isEmpty()) {
-            availablePunishments = db.punicaoDao().getAll().toMutableList()
-        }
-    }
-
     private fun showQuestion(type: String) {
         lifecycleScope.launch {
-            loadQuestionsIfNeeded()
+            // Limpa o timer (isso está correto)
             currentTimer?.cancel()
             timerText.visibility = View.GONE
             startTimerButton.visibility = View.GONE
 
             val questionTextValue = when (type) {
-
                 "truth" -> {
-                    if (availableTruths.isNotEmpty()) {
-                        val randomIndex = Random.nextInt(availableTruths.size)
-                        val question = availableTruths.removeAt(randomIndex)
-                        question.texto
-                    } else "Nenhuma pergunta de verdade disponível!"
+                    // Lógica antiga removida
+                    val pergunta = gameManager.getRandomPergunta()
+                    pergunta?.texto ?: "Nenhuma pergunta de verdade disponível!"
                 }
 
                 "dare" -> {
-                    if (availableDares.isNotEmpty()) {
-                        val randomIndex = Random.nextInt(availableDares.size)
-                        val desafio = availableDares.removeAt(randomIndex)
+                    // Lógica antiga removida
+                    val desafio = gameManager.getRandomDesafio()
+                    if (desafio != null) {
                         currentQuestionDuration = desafio.tempo
 
                         if (desafio.tempo > 0) {
@@ -187,12 +168,12 @@ class MainActivity : AppCompatActivity() {
                             timerText.text = String.format("%02d:%02d", min, sec)
                             timerText.visibility = View.VISIBLE
                             startTimerButton.visibility = View.VISIBLE
-                        } else {
-                            timerText.visibility = View.GONE
-                            startTimerButton.visibility = View.GONE
                         }
+
                         desafio.texto
-                    } else "Nenhum desafio disponível!"
+                    } else {
+                        "Nenhum desafio disponível!"
+                    }
                 }
 
                 else -> "Tipo inválido!"
@@ -204,10 +185,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun showPunishment() {
         lifecycleScope.launch {
-            val punicoes = db.punicaoDao().getByLevel(currentLevel)
-            if (punicoes.isNotEmpty()) {
-                val randomPunishment = punicoes.random().texto
-                questionText.text = "PUNIÇÃO:\n$randomPunishment"
+            val punicao = gameManager.getRandomPunicao(currentLevel)
+            if (punicao != null) {
+                questionText.text = "PUNIÇÃO:\n${punicao.texto}"
             } else {
                 questionText.text = "Sem punições disponíveis!"
             }

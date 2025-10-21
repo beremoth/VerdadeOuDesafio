@@ -10,7 +10,7 @@ class DataRepository private constructor(context: Context) {
     private val db = Room.databaseBuilder(
         context.applicationContext,
         AppDatabase::class.java,
-        "verdadeoudesafio.db"
+        "verdade_ou_desafio_db"
     ).build()
 
     // Perguntas
@@ -27,9 +27,10 @@ class DataRepository private constructor(context: Context) {
 
     // Punições
     suspend fun getPunicoes(): List<PunicaoEntity> = db.punicaoDao().getAll()
+    suspend fun getPunicoesPorLevel(level: Int): List<PunicaoEntity> = db.punicaoDao().getByLevel(level)
     suspend fun addPunicao(texto: String,level: Int) = db.punicaoDao().insert(PunicaoEntity(texto = texto, level = level))
 
-    // Raspadinhas
+
     // Raspadinhas
     suspend fun getRaspadinhas(): List<RaspadinhaEntity> = db.raspadinhaDao().getAll()
     suspend fun addRaspadinha(imagePath: String) = db.raspadinhaDao().insert(RaspadinhaEntity(imagePath = imagePath))
