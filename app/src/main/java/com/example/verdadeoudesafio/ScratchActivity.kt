@@ -2,7 +2,7 @@ package com.example.verdadeoudesafio
 
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.net.Uri // Importação importante
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
@@ -13,8 +13,9 @@ import com.example.verdadeoudesafio.data.database.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File // Importação MUITO importante
+import java.io.File
 import java.io.IOException
+import android.content.res.AssetManager
 
 /**
  * Classe auxiliar (está correta, não mude)
@@ -27,11 +28,9 @@ sealed class ImageSource {
 class ScratchActivity : AppCompatActivity() {
 
     // Lista de imagens padrão (está correta)
-    private val defaultAssetImages = listOf(
-        "imagem1.jpg",
-        "imagem2.jpg",
-        "imagem3.jpg"
-    )
+    private val assetImageFiles: List<String> by lazy {
+        findImageFilesInAssets(assets, "")
+    }
 
     // Instância do DB (está correta)
     private val db by lazy {
@@ -102,7 +101,7 @@ class ScratchActivity : AppCompatActivity() {
     private suspend fun getImagemAleatoria(): ImageSource? {
         return withContext(Dispatchers.IO) {
             // 1. Pega as imagens padrão (da pasta assets)
-            val assetList = defaultAssetImages.map { ImageSource.Asset(it) }
+            val assetList = assetImageFiles.map { ImageSource.Asset(it) }
 
             // 2. Pega as imagens customizadas (do banco de dados)
             val dbList = db.raspadinhaDao().getAll().map { ImageSource.Path(it.imagePath) }
@@ -112,6 +111,24 @@ class ScratchActivity : AppCompatActivity() {
 
             // 4. Sorteia uma imagem da lista completa
             fullList.randomOrNull()
+        }
+    }
+    private fun findImageFilesInAssets(assetManager: AssetManager, path: String): List<String> {
+        return try {
+            // Lista todos os arquivos e pastas no caminho especificado
+            assetManager.list(path)
+                ?.filterNotNull() // Garante que não há nulos
+                ?.filter { fileName ->
+                    // Filtra apenas arquivos que terminam com extensões de imagem comuns (case-insensitive)
+                    fileName.endsWith(".jpg", ignoreCase = true) ||
+                            fileName.endsWith(".jpeg", ignoreCase = true) ||
+                            fileName.endsWith(".png", ignoreCase = true) ||
+                            fileName.endsWith(".webp", ignoreCase = true)
+                }
+                ?: emptyList() // Retorna lista vazia se list() retornar null
+        } catch (e: IOException) {
+            Log.e("ScratchActivity", "Erro ao listar arquivos em assets/$path", e)
+            emptyList() // Retorna lista vazia em caso de erro
         }
     }
 }
