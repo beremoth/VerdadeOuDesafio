@@ -2,7 +2,6 @@ package com.example.verdadeoudesafio
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager2.widget.ViewPager2
 import com.example.verdadeoudesafio.admin.AdminPagerAdapter
 import com.example.verdadeoudesafio.databinding.ActivityPainelAdminBinding
 import com.google.android.material.tabs.TabLayoutMediator

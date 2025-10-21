@@ -13,14 +13,14 @@ class GameManager(private val context: Context) {
 
     private val repository = DataRepository.getInstance(context)
 
-    suspend fun getRandomPergunta(): PerguntaEntity? = withContext(Dispatchers.IO) {
-        val perguntas = repository.getPerguntas()
-        if (perguntas.isNotEmpty()) perguntas.random() else null
+    suspend fun getRandomPergunta(level: Int): PerguntaEntity? = withContext(Dispatchers.IO) {
+        val perguntas = repository.getPerguntasPorLevel(level)
+        perguntas.randomOrNull()
     }
 
-    suspend fun getRandomDesafio(): DesafioEntity? = withContext(Dispatchers.IO) {
-        val desafios = repository.getDesafios()
-        if (desafios.isNotEmpty()) desafios.random() else null
+    suspend fun getRandomDesafio(level: Int): DesafioEntity? = withContext(Dispatchers.IO) {
+        val desafios = repository.getDesafiosPorLevel(level)
+        desafios.randomOrNull()
     }
 
     suspend fun getRandomPunicao(level: Int): PunicaoEntity? = withContext(Dispatchers.IO) {
@@ -28,11 +28,11 @@ class GameManager(private val context: Context) {
         punicoes.randomOrNull()
     }
 
-    suspend fun getRandomPerguntaOuDesafio(): String = withContext(Dispatchers.IO) {
+    suspend fun getRandomPerguntaOuDesafio(level: Int): String = withContext(Dispatchers.IO) { // Agora recebe level
         if (Random.nextBoolean()) {
-            getRandomPergunta()?.texto ?: "Sem perguntas disponíveis"
+            getRandomPergunta(level)?.texto ?: "Sem perguntas disponíveis para este nível" // CORRETO
         } else {
-            getRandomDesafio()?.texto ?: "Sem desafios disponíveis"
+            getRandomDesafio(level)?.texto ?: "Sem desafios disponíveis para este nível" // CORRETO
         }
     }
 }

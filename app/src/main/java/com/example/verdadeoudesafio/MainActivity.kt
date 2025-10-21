@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dareButton: Button
     private lateinit var skipButton: Button
     private lateinit var settingsButton: Button
-    private lateinit var levelText: TextView
+    private lateinit var levelText: TextView // TextView para mostrar o nível
     private lateinit var timerText: TextView
     private lateinit var startTimerButton: Button
     private lateinit var db: AppDatabase
@@ -41,35 +41,38 @@ class MainActivity : AppCompatActivity() {
 
     private var players: MutableList<String> = mutableListOf()
     private var currentPlayerIndex = 0
-    private var currentLevel = 2
+    private var currentLevel = 2 // Nível padrão
     private var currentTimer: CountDownTimer? = null
     private var currentQuestionDuration: Int = 0
     private var isGameStarted = false
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Inicialização do Banco de Dados
         db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
-            "verdade_ou_desafio_db"
+            "verdade_ou_desafio_db" // Nome correto do DB
         ).build()
 
+        // Popula o DB se estiver vazio (apenas na primeira vez)
         lifecycleScope.launch {
             DatabaseInitializer.populateDatabaseIfEmpty(this@MainActivity, db)
         }
 
         sharedPreferences = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
-        initializeUI()
-        requestVibrationPermissionIfNeeded()
-        loadPlayers()
-        updatePlayerText()
-        loadLevel()
+        initializeUI() // Encontra as Views
+        requestVibrationPermissionIfNeeded() // Pede permissão se necessário
+
+        // --- Carrega dados iniciais ---
+        // loadPlayers() // Movido para onResume para atualizar após Settings
+        // updatePlayerText() // Movido para onResume
+        // loadLevel() // Movido para onResume
 
 
+        // Configuração dos botões
         truthButton.setOnClickListener {
             isGameStarted = true
             currentTimer?.cancel()
@@ -100,10 +103,18 @@ class MainActivity : AppCompatActivity() {
                 startTimer(currentQuestionDuration)
             }
         }
-
-        startTimerButton.visibility = View.GONE
+        startTimerButton.visibility = View.GONE // Esconde o botão do timer inicialmente
     }
 
+    // --- NOVO MÉTODO onResume ---
+    override fun onResume() {
+        super.onResume()
+        // Recarrega as configurações e atualiza a UI toda vez que a Activity volta ao foco
+        loadLevel() // Carrega o nível e ATUALIZA O TEXTVIEW
+        loadPlayers() // Recarrega a lista de jogadores (pode ter mudado)
+        updatePlayerText() // Atualiza o texto do jogador atual/lista
+    }
+    // ----------------------------
 
     private fun initializeUI() {
         questionText = findViewById(R.id.question_text)
@@ -112,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         dareButton = findViewById(R.id.btn_dare)
         skipButton = findViewById(R.id.btn_consequence)
         settingsButton = findViewById(R.id.btn_settings)
-        levelText = findViewById(R.id.level_text)
+        levelText = findViewById(R.id.level_text) // Encontra o TextView do nível
         timerText = findViewById(R.id.timer_text)
         startTimerButton = findViewById(R.id.btn_start_timer)
     }
@@ -120,127 +131,166 @@ class MainActivity : AppCompatActivity() {
     private fun loadPlayers() {
         val saved = sharedPreferences.getStringSet("players_list", emptySet())?.toList() ?: emptyList()
         players = if (saved.isNotEmpty()) saved.shuffled().toMutableList() else mutableListOf("Jogador 1")
-        currentPlayerIndex = 0
+        // Não reseta o currentPlayerIndex aqui para continuar de onde parou se voltar das config
+        if (currentPlayerIndex >= players.size) { // Ajusta índice se a lista diminuiu
+            currentPlayerIndex = 0
+        }
     }
 
     private fun updatePlayerText() {
+        if (players.isEmpty()) { // Segurança caso a lista fique vazia
+            playerText.text = "Adicione jogadores nas Configurações"
+            return
+        }
         if (!isGameStarted) {
             val list = players.joinToString("\n") { "- $it" }
-            playerText.text = "Ordem dos jogadores:\n$list\nPrimeiro a jogar: ${players[0]}"
+            playerText.text = "Ordem dos jogadores:\n$list\n\nPrimeiro a jogar: ${players[0]}"
         } else {
+            // Garante que o índice é válido antes de acessar
+            if (currentPlayerIndex < 0 || currentPlayerIndex >= players.size) {
+                currentPlayerIndex = 0 // Reseta se inválido
+            }
             val current = players[currentPlayerIndex]
-            playerText.text = "Próximo é: $current"
+            playerText.text = "É a vez de: $current" // Texto mais claro
         }
     }
 
     private fun nextPlayer() {
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.size
-        updatePlayerText()
+        if (players.isNotEmpty()) { // Só avança se houver jogadores
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.size
+            updatePlayerText()
+        }
     }
 
     private fun loadLevel() {
-        currentLevel = sharedPreferences.getInt("selected_level", 2)
+        currentLevel = sharedPreferences.getInt("selected_level", 2) // Pega o nível salvo (padrão 2)
+
+        // --- ATUALIZA O TEXTVIEW DO NÍVEL ---
+        levelText.text = when (currentLevel) {
+            1 -> "Nível: Leve"
+            2 -> "Nível: Moderado"
+            3 -> "Nível: Extremo"
+            else -> "Nível: Moderado (Padrão)" // Fallback
+        }
+        // ------------------------------------
     }
 
+    // Busca Pergunta OU Desafio usando GameManager e o nível atual
     private fun showQuestion(type: String) {
         lifecycleScope.launch {
-            // Limpa o timer (isso está correto)
             currentTimer?.cancel()
             timerText.visibility = View.GONE
             startTimerButton.visibility = View.GONE
 
             val questionTextValue = when (type) {
                 "truth" -> {
-                    // Lógica antiga removida
-                    val pergunta = gameManager.getRandomPergunta()
-                    pergunta?.texto ?: "Nenhuma pergunta de verdade disponível!"
+                    val pergunta = gameManager.getRandomPergunta(currentLevel) // Usa o nível
+                    pergunta?.texto ?: "Nenhuma pergunta de verdade disponível para este nível!"
                 }
-
                 "dare" -> {
-                    // Lógica antiga removida
-                    val desafio = gameManager.getRandomDesafio()
+                    val desafio = gameManager.getRandomDesafio(currentLevel) // Usa o nível
                     if (desafio != null) {
                         currentQuestionDuration = desafio.tempo
-
                         if (desafio.tempo > 0) {
                             val min = desafio.tempo / 60
                             val sec = desafio.tempo % 60
                             timerText.text = String.format("%02d:%02d", min, sec)
                             timerText.visibility = View.VISIBLE
                             startTimerButton.visibility = View.VISIBLE
+                        } else {
+                            // Garante que o timer seja escondido se não houver duração
+                            timerText.visibility = View.GONE
+                            startTimerButton.visibility = View.GONE
                         }
-
                         desafio.texto
                     } else {
-                        "Nenhum desafio disponível!"
+                        "Nenhum desafio disponível para este nível!"
                     }
                 }
-
                 else -> "Tipo inválido!"
             }
-
             questionText.text = questionTextValue
         }
     }
 
+    // Busca Punição usando GameManager e o nível atual
     private fun showPunishment() {
         lifecycleScope.launch {
-            val punicao = gameManager.getRandomPunicao(currentLevel)
+            currentTimer?.cancel()
+            timerText.visibility = View.GONE
+            startTimerButton.visibility = View.GONE
+
+            val punicao = gameManager.getRandomPunicao(currentLevel) // Usa o nível
             if (punicao != null) {
                 questionText.text = "PUNIÇÃO:\n${punicao.texto}"
             } else {
-                questionText.text = "Sem punições disponíveis!"
+                questionText.text = "Sem punições disponíveis para este nível!"
             }
         }
     }
 
-
+    // Inicia o contador regressivo
     private fun startTimer(duration: Int) {
         currentTimer?.cancel()
+        startTimerButton.visibility = View.GONE // Esconde o botão "Iniciar Timer"
+        timerText.visibility = View.VISIBLE // Mostra o texto do timer
+
         currentTimer = object : CountDownTimer(duration * 1000L, 1000) {
-            override fun onTick(millis: Long) {
-                val sec = millis / 1000
-                val min = sec / 60
-                val rem = sec % 60
-                timerText.text = String.format("%02d:%02d", min, rem)
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsRemaining = millisUntilFinished / 1000
+                val minutes = secondsRemaining / 60
+                val seconds = secondsRemaining % 60
+                timerText.text = String.format("%02d:%02d", minutes, seconds)
             }
 
             override fun onFinish() {
                 timerText.text = "Tempo esgotado!"
                 vibratePhone()
-                startTimerButton.visibility = View.VISIBLE
+                // Não mostra o botão "Iniciar" de novo automaticamente,
+                // espera o próximo desafio com timer.
             }
         }.start()
-        timerText.visibility = View.VISIBLE
-        startTimerButton.visibility = View.GONE
     }
 
+    // Função para vibrar o celular
     private fun vibratePhone() {
         if (!checkVibrationPermission()) return
 
         val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val vm = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
-            vm.defaultVibrator
+            val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.defaultVibrator
         } else {
             @Suppress("DEPRECATION")
-            getSystemService(VIBRATOR_SERVICE) as Vibrator
+            getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
+            // Para versões mais antigas do Android
             @Suppress("DEPRECATION")
             vibrator.vibrate(500)
         }
     }
 
+    // Verifica se a permissão para vibrar foi concedida
     private fun checkVibrationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED
     }
 
+    // Pede permissão para vibrar se necessário (Android 12+)
     private fun requestVibrationPermissionIfNeeded() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !checkVibrationPermission()) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.VIBRATE), 100)
+        // A permissão VIBRATE só é necessária a partir do Android S (API 31) se declarada no Manifest
+        // Em versões anteriores, ela é concedida automaticamente se declarada.
+        // No entanto, a boa prática é verificar.
+        if (!checkVibrationPermission()) {
+            // Se não declarada no Manifest, não adianta pedir. Se declarada, verificar.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+                // A permissão VIBRATE foi movida para permissões normais, não precisa pedir em runtime
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // Em teoria, não deveria ser necessário pedir VIBRATE em runtime, mas alguns OEMs podem exigir.
+                //ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.VIBRATE), 100)
+            }
         }
     }
 }

@@ -5,11 +5,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import android.widget.FrameLayout
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
@@ -60,7 +63,8 @@ class SettingsActivity : AppCompatActivity() {
 
 
         btnAdmin.setOnClickListener {
-            openAdmin(View(this))
+            Log.d("SettingsActivity", "Admin button clicked!") // Log 1: Botão clicado
+            openAdmin()
         }
 
         // Salva as configurações ao clicar no botão "Salvar"
@@ -69,8 +73,14 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    fun openAdmin(view: View) {
-        startActivity(Intent(this, LoginAdminActivity::class.java))
+    fun openAdmin() {
+        Log.d("SettingsActivity", "openAdmin function called") // Log 2: Função chamada
+        try {
+            startActivity(Intent(this, LoginAdminActivity::class.java))
+            Log.d("SettingsActivity", "Started LoginAdminActivity successfully") // Log 3: Activity iniciada
+        } catch (e: Exception) {
+            Log.e("SettingsActivity", "Error starting LoginAdminActivity", e) // Log 4: Erro ao iniciar
+        }
     }
 
     private fun loadPlayers() {

@@ -16,12 +16,14 @@ class DataRepository private constructor(context: Context) {
     // Perguntas
     suspend fun getPerguntas(): List<PerguntaEntity> = db.perguntaDao().getAll()
     suspend fun addPergunta(texto: String, level: Int) = db.perguntaDao().insert(PerguntaEntity(texto = texto, level = level))
+    suspend fun getPerguntasPorLevel(level: Int): List<PerguntaEntity> = db.perguntaDao().getByLevel(level)
     suspend fun updatePergunta(p: PerguntaEntity) = db.perguntaDao().update(p)
     suspend fun deletePergunta(p: PerguntaEntity) = db.perguntaDao().delete(p)
 
     // Desafios
     suspend fun getDesafios(): List<DesafioEntity> = db.desafioDao().getAll()
     suspend fun addDesafio(texto: String, tempo: Int, level: Int) = db.desafioDao().insert(DesafioEntity(texto = texto, tempo = tempo, level = level))
+    suspend fun getDesafiosPorLevel(level: Int): List<DesafioEntity> = db.desafioDao().getByLevel(level)
     suspend fun updateDesafio(d: DesafioEntity) = db.desafioDao().update(d)
     suspend fun deleteDesafio(d: DesafioEntity) = db.desafioDao().delete(d)
 

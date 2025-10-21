@@ -2,6 +2,7 @@ package com.example.verdadeoudesafio.data.dao
 
 import androidx.room.*
 import com.example.verdadeoudesafio.data.entity.PerguntaEntity
+import com.example.verdadeoudesafio.data.entity.PunicaoEntity
 
 @Dao
 interface PerguntaDao {
@@ -13,6 +14,9 @@ interface PerguntaDao {
     // 🔹 Insere nova pergunta (ou substitui se já existir o mesmo ID)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(perguntas: PerguntaEntity)
+
+    @Query("SELECT * FROM perguntas WHERE level = :level")
+    suspend fun getByLevel(level: Int): List<PerguntaEntity>
 
     // 🔹 Atualiza pergunta existente
     @Update
