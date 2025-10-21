@@ -2,12 +2,16 @@ package com.example.verdadeoudesafio.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.verdadeoudesafio.admin.TextLevelItem
 
 @Entity(tableName = "desafios")
 data class DesafioEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val texto: String,
-    val level: Int,
-    val tempo: Int = 0,
-    val timestamp: Long = System.currentTimeMillis()
-)
+    @PrimaryKey(autoGenerate = true) override val id: Int = 0,
+    override val texto: String,
+    override val level: Int,
+    val tempo: Int // Campo original
+) : TextLevelItem { // Implementa a interface
+    // Sobrescreve 'tempo' da interface para retornar o valor real
+    override val tempo: Int?
+        get() = this.tempo
+}

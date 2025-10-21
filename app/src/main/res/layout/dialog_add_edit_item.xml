@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/editTextItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Texto do item"
+        android:inputType="textMultiLine"
+        android:minLines="2"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nível:"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupLevel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/radioLevel1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Leve" />
+
+        <RadioButton
+            android:id="@+id/radioLevel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Moderado" />
+
+        <RadioButton
+            android:id="@+id/radioLevel3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Extremo" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/timeInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="gone"> <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tempo:"
+        android:textStyle="bold"
+        android:layout_marginEnd="8dp"/>
+
+        <EditText
+            android:id="@+id/editTempoMin"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="2"
+            android:hint="Min"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"/>
+
+        <EditText
+            android:id="@+id/editTempoSeg"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="2"
+            android:hint="Seg"/>
+    </LinearLayout>
+
+</LinearLayout>
