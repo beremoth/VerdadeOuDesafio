@@ -1,5 +1,6 @@
 package com.example.verdadeoudesafio.admin
 
+import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import java.io.File
 
 class RaspadinhaAdminAdapter(
     private var items: MutableList<RaspadinhaEntity>,
+    private val context: Context,
     private val onDelete: (RaspadinhaEntity) -> Unit
 ) : RecyclerView.Adapter<RaspadinhaAdminAdapter.ViewHolder>() {
 
@@ -26,21 +28,48 @@ class RaspadinhaAdminAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
+        val binding = holder.binding
 
-        // Carrega a imagem do arquivo salvo no armazenamento interno
-        try {
-            val file = File(item.imagePath)
-            if (file.exists()) {
-                holder.binding.imgPreview.setImageURI(Uri.fromFile(file))
-            } else {
-                holder.binding.imgPreview.setImageResource(android.R.drawable.ic_dialog_alert) // Imagem de erro
-            }
-        } catch (e: Exception) {
-            holder.binding.imgPreview.setImageResource(android.R.drawable.ic_dialog_alert)
+        val imagePath = item.imagePath
+        var loaded = false
+
+        // 1️⃣ Tenta carregar a imagem do caminho salvo no banco (armazenamento interno)
+        if (!imagePath.isNullOrBlank()) {
+            try {
+                val file = File(imagePath)
+                if (file.exists()) {
+                    binding.imgPreview.setImageURI(Uri.fromFile(file))
+                    loaded = true
+                }
+            } catch (_: Exception) { }
         }
 
-        holder.binding.txtImagePath.text = item.imagePath.substringAfterLast('/') // Mostra só o nome do arquivo
-        holder.binding.btnDeleteImage.setOnClickListener {
+        // 2️⃣ Se não encontrar no storage, tenta buscar nos assets/rapadinhas
+        if (!loaded) {
+            try {
+                val assetManager = context.assets
+                val assetList = assetManager.list("rapadinhas") ?: emptyArray()
+                val fileName = imagePath.substringAfterLast('/')
+                if (assetList.contains(fileName)) {
+                    assetManager.open("rapadinhas/$fileName").use { inputStream ->
+                        val drawable = android.graphics.drawable.Drawable.createFromStream(inputStream, null)
+                        binding.imgPreview.setImageDrawable(drawable)
+                        loaded = true
+                    }
+                }
+            } catch (_: Exception) { }
+        }
+
+        // 3️⃣ Se ainda assim falhar, mostra imagem de erro
+        if (!loaded) {
+            binding.imgPreview.setImageResource(android.R.drawable.ic_delete)
+        }
+
+        // 4️⃣ Mostra apenas o nome da imagem
+        binding.txtImagePath.text = imagePath.substringAfterLast('/', "Sem imagem")
+
+        // 5️⃣ Ação de deletar
+        binding.btnDeleteImage.setOnClickListener {
             onDelete(item)
         }
     }

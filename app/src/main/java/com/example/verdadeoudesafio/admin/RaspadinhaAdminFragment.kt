@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,7 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.verdadeoudesafio.data.database.AppDatabase // Importe o Singleton
+import com.example.verdadeoudesafio.data.database.AppDatabase
 import com.example.verdadeoudesafio.data.entity.RaspadinhaEntity
 import com.example.verdadeoudesafio.databinding.FragmentAdminRaspadinhaBinding
 import kotlinx.coroutines.Dispatchers
@@ -35,24 +36,18 @@ class RaspadinhaAdminFragment : Fragment() {
 
     private lateinit var adapter: RaspadinhaAdminAdapter
 
-    // --- ESTA É A MUDANÇA ---
     private val db by lazy {
         AppDatabase.getDatabase(requireContext().applicationContext)
     }
-    // --- FIM DA MUDANÇA ---
 
-    // Lançador para o resultado do pedido de permissão
+    // --- Permissões e seletor de imagem ---
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        if (isGranted) {
-            openGallery()
-        } else {
-            Log.w("RaspadinhaAdmin", "Permissão de leitura negada pelo usuário.")
-        }
+        if (isGranted) openGallery()
+        else Log.w("RaspadinhaAdmin", "Permissão de leitura negada pelo usuário.")
     }
 
-    // Lançador para o resultado do seletor de imagem
     private val imagePickerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -72,24 +67,22 @@ class RaspadinhaAdminFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupAddButton()
-        loadImagesFromDb()
+        loadImages()
     }
 
     private fun setupRecyclerView() {
         adapter = RaspadinhaAdminAdapter(
-            mutableListOf(),
-            onDelete = { item ->
-                showDeleteConfirmation(item)
-            }
+            items = mutableListOf(),
+            context = requireContext(),
+            onDelete = { raspadinha -> showDeleteConfirmation(raspadinha)  }
         )
+
         binding.recyclerViewRaspadinhas.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewRaspadinhas.adapter = adapter
     }
 
     private fun setupAddButton() {
-        binding.btnAddRaspadinha.setOnClickListener {
-            checkAndRequestPermission()
-        }
+        binding.btnAddRaspadinha.setOnClickListener { checkAndRequestPermission() }
     }
 
     private fun checkAndRequestPermission() {
@@ -98,18 +91,13 @@ class RaspadinhaAdminFragment : Fragment() {
             return
         }
         when {
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                openGallery()
-            }
-            shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED -> openGallery()
+
+            shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) ->
                 permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
-            else -> {
-                permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
+
+            else -> permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     }
 
@@ -119,24 +107,63 @@ class RaspadinhaAdminFragment : Fragment() {
         imagePickerLauncher.launch(intent)
     }
 
-    // Esta função agora vai ler o banco JÁ POPULADO com as imagens de assets
-    private fun loadImagesFromDb() {
+    /**
+     * Carrega as imagens do banco e também as da pasta assets/rapadinhas
+     */
+    private fun loadImages() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val imageList = db.raspadinhaDao().getAll()
+            val dbImages = db.raspadinhaDao().getAll().toMutableList()
+
+            // Adiciona também as imagens dos assets
+            val assetImages = loadImagesFromAssets(requireContext())
+
+            // Evita duplicatas (se o mesmo arquivo já foi salvo)
+            val combinedList = mutableListOf<RaspadinhaEntity>()
+            combinedList.addAll(dbImages)
+
+            for (asset in assetImages) {
+                val alreadyExists = dbImages.any { it.imagePath.endsWith(asset.imagePath.substringAfterLast("/")) }
+                if (!alreadyExists) combinedList.add(asset)
+            }
+
             withContext(Dispatchers.Main) {
-                adapter.updateList(imageList)
+                adapter.updateList(combinedList)
             }
         }
     }
 
-    // Esta função adiciona NOVAS imagens da galeria
+    /**
+     * Carrega imagens da pasta assets/rapadinhas
+     */
+    private fun loadImagesFromAssets(context: Context): List<RaspadinhaEntity> {
+        val images = mutableListOf<RaspadinhaEntity>()
+        try {
+            val assetNames = context.assets.list("rapadinhas") ?: return emptyList()
+            for (fileName in assetNames) {
+                val tempFile = File(context.cacheDir, fileName)
+                if (!tempFile.exists()) {
+                    context.assets.open("rapadinhas/$fileName").use { input ->
+                        FileOutputStream(tempFile).use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                }
+                images.add(RaspadinhaEntity(imagePath = tempFile.absolutePath))
+            }
+        } catch (e: IOException) {
+            Log.e("RaspadinhaAdmin", "Erro ao carregar assets: ${e.message}", e)
+        }
+        return images
+    }
+
     private fun copyImageToInternalStorage(uri: Uri) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val fileName = getFileName(requireContext(), uri) ?: "raspadinha_${System.currentTimeMillis()}.jpg"
+            val fileName = getFileName(requireContext(), uri)
+                ?: "raspadinha_${System.currentTimeMillis()}.jpg"
+
             val directory = File(requireContext().filesDir, "raspadinhas")
-            if (!directory.exists()) {
-                directory.mkdirs()
-            }
+            if (!directory.exists()) directory.mkdirs()
+
             val destinationFile = File(directory, fileName)
 
             try {
@@ -146,12 +173,8 @@ class RaspadinhaAdminFragment : Fragment() {
                     }
                 }
 
-                val newRaspadinha = RaspadinhaEntity(imagePath = destinationFile.absolutePath)
-                db.raspadinhaDao().insert(newRaspadinha)
-
-                withContext(Dispatchers.Main) {
-                    loadImagesFromDb() // Recarrega a lista
-                }
+                db.raspadinhaDao().insert(RaspadinhaEntity(imagePath = destinationFile.absolutePath))
+                withContext(Dispatchers.Main) { loadImages() }
 
             } catch (e: IOException) {
                 Log.e("RaspadinhaAdmin", "Erro ao copiar imagem: ${e.message}", e)
@@ -163,9 +186,7 @@ class RaspadinhaAdminFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle("Confirmar Exclusão")
             .setMessage("Tem certeza que deseja deletar esta imagem?")
-            .setPositiveButton("Deletar") { _, _ ->
-                deleteImage(item)
-            }
+            .setPositiveButton("Deletar") { _, _ -> deleteImage(item) }
             .setNegativeButton("Cancelar", null)
             .show()
     }
@@ -174,15 +195,9 @@ class RaspadinhaAdminFragment : Fragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val file = File(item.imagePath)
-                if (file.exists()) {
-                    file.delete()
-                }
-
+                if (file.exists()) file.delete()
                 db.raspadinhaDao().delete(item)
-
-                withContext(Dispatchers.Main) {
-                    loadImagesFromDb()
-                }
+                withContext(Dispatchers.Main) { loadImages() }
             } catch (e: Exception) {
                 Log.e("RaspadinhaAdmin", "Erro ao deletar imagem: ${e.message}", e)
             }

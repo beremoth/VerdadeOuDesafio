@@ -11,14 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.verdadeoudesafio.data.database.AppDatabase
 import com.example.verdadeoudesafio.databinding.FragmentCrudBinding
 import kotlinx.coroutines.launch
-import com.example.verdadeoudesafio.admin.TextLevelItem // Importa a interface correta
+import com.example.verdadeoudesafio.admin.TextLevelItem
 
 abstract class BaseAdminFragment<T : TextLevelItem> : Fragment() {
 
     private var _binding: FragmentCrudBinding? = null
     protected val binding get() = _binding!!
 
-    // ViewModel foi removido, corrigindo 'Unresolved reference: AdminViewModel'
 
     protected lateinit var adapter: AdminItemAdapter<T>
 
@@ -27,11 +26,11 @@ abstract class BaseAdminFragment<T : TextLevelItem> : Fragment() {
     }
 
     // Métodos abstratos que os "filhos" (PerguntaAdminFragment, etc.) vão implementar
-    abstract val fragmentTitle: String // Corrigindo 'Unresolved reference: fragmentTitle'
+    abstract val fragmentTitle: String
     abstract fun setupObservers()
     abstract fun setupViews()
     abstract fun showAddEditDialog(item: T?)
-    abstract suspend fun deleteItemFromDb(item: T) // Corrigindo 'Unresolved reference: deleteItem'
+    abstract suspend fun deleteItemFromDb(item: T)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCrudBinding.inflate(inflater, container, false)
@@ -60,7 +59,7 @@ abstract class BaseAdminFragment<T : TextLevelItem> : Fragment() {
     protected fun showDeleteConfirmation(item: T) {
         AlertDialog.Builder(requireContext())
             .setTitle("Confirmar Exclusão")
-            .setMessage("Tem certeza que deseja deletar este item?\n\n\"${item.texto}\"") // MUDADO PARA 'texto'
+            .setMessage("Tem certeza que deseja deletar este item?\n\n\"${item.texto}\"")
             .setPositiveButton("Deletar") { _, _ ->
                 lifecycleScope.launch {
                     deleteItemFromDb(item)

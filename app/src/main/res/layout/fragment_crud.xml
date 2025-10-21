@@ -4,6 +4,18 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:id="@+id/fragmentTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Título do Painel"
+        android:textAlignment="center"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:padding="12dp"
+        android:textColor="@android:color/black"
+        android:background="?attr/colorSurface"
+        android:elevation="2dp" />
+
     <EditText
         android:id="@+id/etNewItem"
         android:layout_width="match_parent"

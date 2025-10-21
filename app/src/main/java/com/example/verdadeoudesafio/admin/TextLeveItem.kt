@@ -1,7 +1,7 @@
 package com.example.verdadeoudesafio.admin
 
 // Interface para itens de texto que possuem nível e, opcionalmente, tempo
-interface TextLeveItem {
+interface TextLevelItem {
     val id: Int // Ou Long, dependendo da sua chave primária
     val texto: String
     val level: Int
