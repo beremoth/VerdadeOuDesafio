@@ -1,6 +1,5 @@
 package com.example.verdadeoudesafio
 
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -8,29 +7,23 @@ import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-// import androidx.room.Room // Removido
-import com.example.verdadeoudesafio.data.database.AppDatabase // Importado
+import com.example.verdadeoudesafio.data.database.AppDatabase
+import com.example.verdadeoudesafio.data.entity.RaspadinhaEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
-import android.content.res.AssetManager
 
-sealed class ImageSource {
-    data class Asset(val fileName: String) : ImageSource()
-    data class Path(val filePath: String) : ImageSource()
-}
 
 class ScratchActivity : AppCompatActivity() {
 
-    private val assetImageFiles: List<String> by lazy {
-        findImageFilesInAssets(assets, "raspadinhas")
-    }
 
     private val db by lazy {
         AppDatabase.getDatabase(applicationContext, lifecycleScope)
     }
+    private val gameManager by lazy { GameManager(db) }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,33 +34,21 @@ class ScratchActivity : AppCompatActivity() {
         val scratchView = findViewById<ScratchView>(R.id.scratchView)
 
         lifecycleScope.launch {
-            val imageSource = getImagemAleatoria()
+            // 1. Busca UMA imagem aleatória (do banco) através do GameManager
+            val raspadinha = getImagemAleatoria() // Agora retorna RaspadinhaEntity?
 
-            if (imageSource == null) {
-                Log.e("ScratchActivity", "Nenhuma imagem encontrada (nem no assets, nem no DB).")
+            if (raspadinha == null) {
+                Log.e("ScratchActivity", "Nenhuma imagem encontrada no banco de dados.")
                 return@launch
             }
 
             try {
-                when (imageSource) {
-                    // Carrega da pasta ASSETS/RASPADINHAS
-                    is ImageSource.Asset -> {
-                        Log.d("ScratchActivity", "Carregando do Assets: ${imageSource.fileName}")
-                        // Precisa adicionar o caminho da pasta
-                        val inputStream = assets.open("raspadinhas/${imageSource.fileName}")
-                        val bitmap = BitmapFactory.decodeStream(inputStream)
-                        bgImage.setImageBitmap(bitmap)
-                        inputStream.close()
-                    }
+                // 2. Não existe mais "when", pois SÓ temos um tipo de imagem (Path)
+                Log.d("ScratchActivity", "Carregando do DB/Path: ${raspadinha.imagePath}")
+                val file = File(raspadinha.imagePath)
+                val uri = Uri.fromFile(file)
+                bgImage.setImageURI(uri)
 
-                    // Carrega do armazenamento interno (imagens salvas pelo Admin)
-                    is ImageSource.Path -> {
-                        Log.d("ScratchActivity", "Carregando do DB/Path: ${imageSource.filePath}")
-                        val file = File(imageSource.filePath)
-                        val uri = Uri.fromFile(file)
-                        bgImage.setImageURI(uri)
-                    }
-                }
             } catch (e: IOException) {
                 e.printStackTrace()
                 Log.e("ScratchActivity", "Erro ao carregar a imagem: ${e.message}")
@@ -79,30 +60,16 @@ class ScratchActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun getImagemAleatoria(): ImageSource? {
+    /**
+     * Esta função agora é muito mais simples.
+     * Ela apenas pede ao GameManager uma imagem aleatória.
+     */
+    private suspend fun getImagemAleatoria(): RaspadinhaEntity? {
         return withContext(Dispatchers.IO) {
-            val assetList = assetImageFiles.map { ImageSource.Asset(it) }
-            val dbList = db.raspadinhaDao().getAll().map { ImageSource.Path(it.imagePath) }
-            val fullList = assetList + dbList
-            fullList.randomOrNull()
+            // 3. USA A FUNÇÃO DO GAMEMANAGER
+            gameManager.getRandomRaspadinha()
         }
     }
 
-    // Esta função agora lê da subpasta 'raspadinhas'
-    private fun findImageFilesInAssets(assetManager: AssetManager, path: String): List<String> {
-        return try {
-            assetManager.list(path)
-                ?.filterNotNull()
-                ?.filter { fileName ->
-                    fileName.endsWith(".jpg", ignoreCase = true) ||
-                            fileName.endsWith(".jpeg", ignoreCase = true) ||
-                            fileName.endsWith(".png", ignoreCase = true) ||
-                            fileName.endsWith(".webp", ignoreCase = true)
-                }
-                ?: emptyList()
-        } catch (e: IOException) {
-            Log.e("ScratchActivity", "Erro ao listar arquivos em assets/$path", e)
-            emptyList()
-        }
-    }
+    // A função 'findImageFilesInAssets' foi removida, pois não é mais necessária.
 }

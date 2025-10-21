@@ -9,17 +9,18 @@ interface PunicaoDao {
     @Query("SELECT * FROM punicoes")
     suspend fun getAll(): List<PunicaoEntity>
 
+    // --- FUNÇÃO ADICIONADA --- (Para o Admin)
     @Query("SELECT * FROM punicoes ORDER BY level, texto")
     fun getAllFlow(): Flow<List<PunicaoEntity>>
 
     @Query("SELECT * FROM punicoes WHERE level = :level")
     suspend fun getByLevel(level: Int): List<PunicaoEntity>
 
-    // --- ADICIONADA FUNÇÃO FALTANTE ---
+    // --- FUNÇÃO ADICIONADA --- (Para o Jogo)
     @Query("SELECT * FROM punicoes WHERE level <= :level ORDER BY RANDOM() LIMIT 1")
-    suspend fun getRandomByLevel(level: Int): PunicaoEntity?
+    suspend fun getRandomByLevel(level: Int): PunicaoEntity? // Estava retornando PerguntaEntity
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE) // Adicionado 'onConflict'
     suspend fun insert(punicoes: PunicaoEntity)
 
     @Update

@@ -9,15 +9,15 @@ interface RaspadinhaDao {
     @Query("SELECT * FROM raspadinhas")
     suspend fun getAll(): List<RaspadinhaEntity>
 
-    // --- ADICIONADA FUNÇÃO FALTANTE ---
+    // --- FUNÇÃO ADICIONADA --- (Para o Admin)
     @Query("SELECT * FROM raspadinhas")
     fun getAllFlow(): Flow<List<RaspadinhaEntity>>
 
-    // --- ADICIONADA FUNÇÃO FALTANTE ---
+    // --- FUNÇÃO ADICIONADA --- (Para o Jogo)
     @Query("SELECT * FROM raspadinhas ORDER BY RANDOM() LIMIT 1")
     suspend fun getRandom(): RaspadinhaEntity?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(raspadinha: RaspadinhaEntity)
 
     @Update
@@ -26,9 +26,7 @@ interface RaspadinhaDao {
     @Delete
     suspend fun delete(raspadinha: RaspadinhaEntity)
 
-    @Query("DELETE FROM raspadinhas WHERE id = :id")
-    suspend fun deleteById(id: Int)
-
+    // --- FUNÇÃO ADICIONADA --- (Corrige o DatabaseInitializer)
     @Query("SELECT COUNT(id) FROM raspadinhas")
     suspend fun count(): Int
 }

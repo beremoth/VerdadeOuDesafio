@@ -2,15 +2,10 @@ package com.example.verdadeoudesafio.data.database
 
 import android.content.Context
 import android.util.Log
-import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.verdadeoudesafio.data.entity.DesafioEntity
 import com.example.verdadeoudesafio.data.entity.PerguntaEntity
 import com.example.verdadeoudesafio.data.entity.PunicaoEntity
 import com.example.verdadeoudesafio.data.entity.RaspadinhaEntity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
@@ -19,19 +14,7 @@ import java.io.InputStream
 
 class DatabaseInitializer(private val context: Context) {
 
-    fun getCallback(scope: CoroutineScope): RoomDatabase.Callback {
-        return object : RoomDatabase.Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                Log.d("DatabaseInitializer", "Banco de dados CRIADO, populando dados do ASSETS...")
-                scope.launch(Dispatchers.IO) {
-                    val database = AppDatabase.getDatabase(context, this)
-                    initializeJsonData(database)
-                    initializeRaspadinhas(database)
-                }
-            }
-        }
-    }
+    // A função getCallback() foi removida daqui
 
     // Função para ler o JSON do ASSETS
     private fun loadJSON(fileName: String): String {
@@ -43,11 +26,14 @@ class DatabaseInitializer(private val context: Context) {
         }
     }
 
-    // Popula o JSON (usando a lógica do seu arquivo)
-    private suspend fun initializeJsonData(database: AppDatabase) {
+    // Esta função agora é 'public' (padrão) para o AppDatabase chamar
+    suspend fun initializeJsonData(database: AppDatabase) {
         try {
             val jsonString = loadJSON("truth_or_dare.json")
-            if (jsonString.isEmpty()) return
+            if (jsonString.isEmpty()) {
+                Log.e("DatabaseInitializer", "truth_or_dare.json está vazio ou não foi encontrado em assets.")
+                return
+            }
 
             val root = JSONObject(jsonString)
             val perguntaDao = database.perguntaDao()
@@ -66,16 +52,16 @@ class DatabaseInitializer(private val context: Context) {
 
                     when (type.lowercase()) {
                         "truth" -> {
-
                             perguntaDao.insert(PerguntaEntity(texto = text, level = level))
                         }
                         "dare" -> {
-
                             desafioDao.insert(DesafioEntity(texto = text, level = level, tempo = duration))
                         }
                     }
                 }
                 Log.d("DatabaseInitializer", "Perguntas/Desafios carregados de assets.")
+            } else {
+                Log.d("DatabaseInitializer", "JSON não tem 'questions' ou perguntas/desafios já populados.")
             }
 
             // Popula Punições (punishments)
@@ -89,34 +75,34 @@ class DatabaseInitializer(private val context: Context) {
                     punicaoDao.insert(PunicaoEntity(texto = text, level = level))
                 }
                 Log.d("DatabaseInitializer", "Punições carregadas de assets.")
+            } else {
+                Log.d("DatabaseInitializer", "JSON não tem 'punishments' ou punições já populadas.")
             }
 
         } catch (e: Exception) {
-            Log.e("DatabaseInitializer", "Erro ao popular dados do JSON de assets", e)
+            Log.e("DatabaseInitializer", "Erro CRÍTICO ao popular dados do JSON de assets", e)
         }
     }
 
-    // ESTA É A FUNÇÃO QUE MAPAIA E COPIA AS IMAGENS DO ASSETS
-    private suspend fun initializeRaspadinhas(database: AppDatabase) {
+    // Esta função agora é 'public' (padrão)
+    suspend fun initializeRaspadinhas(database: AppDatabase) {
         val raspadinhaDao = database.raspadinhaDao()
-        if (raspadinhaDao.count() > 0) { //Unresolved reference 'compareTo'.
+        if (raspadinhaDao.count() > 0) {
             Log.d("DatabaseInitializer", "Raspadinhas já existem no DB. Pulando.")
             return
         }
 
         Log.d("DatabaseInitializer", "Inicializando imagens de Raspadinha de assets/raspadinhas...")
 
-        val imageFolderName = "raspadinhas" // Nome da pasta em assets
+        val imageFolderName = "raspadinhas"
         val assets = context.assets
 
-        // 1. Onde vamos salvar as imagens (armazenamento interno do app)
         val destinationDirectory = File(context.filesDir, "raspadinhas")
         if (!destinationDirectory.exists()) {
             destinationDirectory.mkdirs()
         }
 
         try {
-            // 2. Lista todos os arquivos dentro de 'assets/raspadinhas'
             val imageFileNames = assets.list(imageFolderName) ?: arrayOf()
             if (imageFileNames.isEmpty()) {
                 Log.w("DatabaseInitializer", "Nenhuma imagem encontrada em assets/raspadinhas")
@@ -125,17 +111,12 @@ class DatabaseInitializer(private val context: Context) {
 
             for (fileName in imageFileNames) {
                 val destinationFile = File(destinationDirectory, fileName)
-
-                // 3. Abre o arquivo de assets
                 val inputStream: InputStream = assets.open("$imageFolderName/$fileName")
-
-                // 4. Copia o arquivo para o armazenamento interno
                 val outputStream = FileOutputStream(destinationFile)
                 inputStream.copyTo(outputStream)
                 inputStream.close()
                 outputStream.close()
 
-                // 5. Salva o NOVO caminho (do armaz. interno) no banco de dados
                 val newRaspadinha = RaspadinhaEntity(imagePath = destinationFile.absolutePath)
                 raspadinhaDao.insert(newRaspadinha)
                 Log.d("DatabaseInitializer", "Copiou de assets e salvou no DB: ${destinationFile.absolutePath}")
