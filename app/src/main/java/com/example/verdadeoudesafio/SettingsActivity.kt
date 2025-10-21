@@ -9,11 +9,12 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import android.widget.FrameLayout
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var saveButton: Button
-    private lateinit var btnAdmin: Button
+    private lateinit var btnAdmin: FrameLayout
     private lateinit var playersContainer: LinearLayout
     private lateinit var addPlayerButton: Button
     private lateinit var playerNameInput: EditText
@@ -32,7 +33,7 @@ class SettingsActivity : AppCompatActivity() {
         addPlayerButton = findViewById(R.id.addPlayerButton)
         playerNameInput = findViewById(R.id.playerNameInput)
         saveButton = findViewById(R.id.saveButton)
-        btnAdmin = findViewById(R.id.btn_admin)
+        btnAdmin = findViewById<FrameLayout>(R.id.btn_admin)
 
 
         // Carrega o nível salvo
