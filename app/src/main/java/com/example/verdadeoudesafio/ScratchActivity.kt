@@ -22,7 +22,8 @@ import android.content.res.AssetManager
  */
 sealed class ImageSource {
     data class Asset(val fileName: String) : ImageSource()
-    data class Path(val filePath: String) : ImageSource() // Mudei o nome para 'filePath' para ficar mais claro
+    data class Path(val filePath: String) :
+        ImageSource() // Mudei o nome para 'filePath' para ficar mais claro
 }
 
 class ScratchActivity : AppCompatActivity() {
@@ -38,7 +39,9 @@ class ScratchActivity : AppCompatActivity() {
             applicationContext,
             AppDatabase::class.java,
             "verdade_ou_desafio_db" // Use o nome exato do seu DB
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,6 +116,7 @@ class ScratchActivity : AppCompatActivity() {
             fullList.randomOrNull()
         }
     }
+
     private fun findImageFilesInAssets(assetManager: AssetManager, path: String): List<String> {
         return try {
             // Lista todos os arquivos e pastas no caminho especificado

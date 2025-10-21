@@ -11,7 +11,9 @@ class DataRepository private constructor(context: Context) {
         context.applicationContext,
         AppDatabase::class.java,
         "verdade_ou_desafio_db"
-    ).build()
+    )
+    .fallbackToDestructiveMigration()
+    .build()
 
     // Perguntas
     suspend fun getPerguntas(): List<PerguntaEntity> = db.perguntaDao().getAll()

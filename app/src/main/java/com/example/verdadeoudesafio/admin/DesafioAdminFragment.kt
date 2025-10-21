@@ -8,6 +8,7 @@ class DesafioAdminFragment : BaseAdminFragment() { // [cite: 22]
 
     private val db by lazy {
         Room.databaseBuilder(requireContext(), AppDatabase::class.java, "verdade_ou_desafio_db")
+            .fallbackToDestructiveMigration()
             .build()
     }
 

@@ -54,8 +54,10 @@ class MainActivity : AppCompatActivity() {
         db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
-            "verdade_ou_desafio_db" // Nome correto do DB
-        ).build()
+            "verdade_ou_desafio_db"
+        )
+        .fallbackToDestructiveMigration()
+        .build()
 
         // Popula o DB se estiver vazio (apenas na primeira vez)
         lifecycleScope.launch {

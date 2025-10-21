@@ -7,7 +7,9 @@ import com.example.verdadeoudesafio.data.entity.PerguntaEntity
 class PerguntaAdminFragment : BaseAdminFragment() {
 
     private val db by lazy {
-        Room.databaseBuilder(requireContext(), AppDatabase::class.java, "verdade_ou_desafio_db").build()
+        Room.databaseBuilder(requireContext(), AppDatabase::class.java, "verdade_ou_desafio_db")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     // Sobrescreve para definir o título

@@ -7,7 +7,7 @@ import com.example.verdadeoudesafio.data.entity.PunicaoEntity
 
 @Dao
 interface DesafioDao {
-    @Query("SELECT * FROM desafios ORDER BY timestamp DESC")
+    @Query("SELECT * FROM desafios")
     suspend fun getAll(): List<DesafioEntity>
 
     @Query("SELECT * FROM desafios WHERE level = :level")
