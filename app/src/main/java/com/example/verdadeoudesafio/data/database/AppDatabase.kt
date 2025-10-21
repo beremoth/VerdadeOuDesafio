@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
         PunicaoEntity::class,
         RaspadinhaEntity::class
     ],
-    version = 7,
+    version = 8, 
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -58,18 +58,18 @@ abstract class AppDatabase : RoomDatabase() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 Log.d("AppDatabase", "onCreate triggered. Lançando coroutine...")
-
+                
                 // Lança a corrotina
                 scope.launch(Dispatchers.IO) {
-                    // Pega a instância do banco SEM causar deadlock
-                    val database = INSTANCE ?: getDatabase(context, scope)
 
+                    val database = INSTANCE ?: getDatabase(context, scope)
+                    
                     // Cria o inicializador e chama as funções
                     val initializer = DatabaseInitializer(context)
-
+                    
                     Log.d("AppDatabase", "Populando JSON...")
                     initializer.initializeJsonData(database)
-
+                    
                     Log.d("AppDatabase", "Populando Raspadinhas...")
                     initializer.initializeRaspadinhas(database)
                 }

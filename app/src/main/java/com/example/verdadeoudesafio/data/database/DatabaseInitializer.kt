@@ -2,10 +2,12 @@ package com.example.verdadeoudesafio.data.database
 
 import android.content.Context
 import android.util.Log
+// Imports do Room removidos daqui
 import com.example.verdadeoudesafio.data.entity.DesafioEntity
 import com.example.verdadeoudesafio.data.entity.PerguntaEntity
 import com.example.verdadeoudesafio.data.entity.PunicaoEntity
 import com.example.verdadeoudesafio.data.entity.RaspadinhaEntity
+// Imports do Coroutine removidos daqui
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
@@ -31,7 +33,7 @@ class DatabaseInitializer(private val context: Context) {
         try {
             val jsonString = loadJSON("truth_or_dare.json")
             if (jsonString.isEmpty()) {
-                Log.e("DatabaseInitializer", "truth_or_dare.json está vazio ou não foi encontrado em assets.")
+                 Log.e("DatabaseInitializer", "truth_or_dare.json está vazio ou não foi encontrado em assets.")
                 return
             }
 
@@ -61,7 +63,7 @@ class DatabaseInitializer(private val context: Context) {
                 }
                 Log.d("DatabaseInitializer", "Perguntas/Desafios carregados de assets.")
             } else {
-                Log.d("DatabaseInitializer", "JSON não tem 'questions' ou perguntas/desafios já populados.")
+                 Log.d("DatabaseInitializer", "JSON não tem 'questions' ou perguntas/desafios já populados.")
             }
 
             // Popula Punições (punishments)
@@ -76,7 +78,7 @@ class DatabaseInitializer(private val context: Context) {
                 }
                 Log.d("DatabaseInitializer", "Punições carregadas de assets.")
             } else {
-                Log.d("DatabaseInitializer", "JSON não tem 'punishments' ou punições já populadas.")
+                 Log.d("DatabaseInitializer", "JSON não tem 'punishments' ou punições já populadas.")
             }
 
         } catch (e: Exception) {
