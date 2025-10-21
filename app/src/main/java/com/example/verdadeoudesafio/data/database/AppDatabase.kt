@@ -47,7 +47,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "verdade_ou_desafio_db"
                 )
                     .fallbackToDestructiveMigration()
-                    .addCallback(initializer.getCallback(scope)) // Chama o inicializador
+                    .addCallback(initializer.getCallback(scope))
                     .build()
 
                 INSTANCE = instance

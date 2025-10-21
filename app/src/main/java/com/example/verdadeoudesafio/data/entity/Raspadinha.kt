@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 data class RaspadinhaEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
 
-    // Caminho da imagem local (ex: /storage/emulated/0/Android/data/... ou content://)
     val imagePath: String,
 
     // Pode ser usado para ordenar ou exibir data de criação

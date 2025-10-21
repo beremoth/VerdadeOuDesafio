@@ -2,13 +2,17 @@ package com.example.verdadeoudesafio.data.dao
 
 import androidx.room.*
 import com.example.verdadeoudesafio.data.entity.DesafioEntity
-import com.example.verdadeoudesafio.data.entity.PunicaoEntity
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
 interface DesafioDao {
+
     @Query("SELECT * FROM desafios")
     suspend fun getAll(): List<DesafioEntity>
+
+    @Query("SELECT * FROM desafios")
+    fun getAllFlow(): Flow<List<DesafioEntity>>
 
     @Query("SELECT * FROM desafios WHERE level = :level")
     suspend fun getByLevel(level: Int): List<DesafioEntity>
@@ -27,4 +31,7 @@ interface DesafioDao {
 
     @Query("DELETE FROM desafios")
     suspend fun deleteAll()
+
+    @Query("SELECT COUNT(texto) FROM desafios")
+    suspend fun count(): Int
 }

@@ -17,7 +17,7 @@ class PunicaoAdminFragment : BaseAdminFragment<PunicaoEntity>() {
 
     private val punicaoDao by lazy { db.punicaoDao() }
 
-    override fun setupViewModelObservers() {
+    override fun setupObservers() {
         lifecycleScope.launch {
             punicaoDao.getAllFlow().collectLatest { punicoes ->
                 adapter.submitList(punicoes)
@@ -26,7 +26,7 @@ class PunicaoAdminFragment : BaseAdminFragment<PunicaoEntity>() {
     }
 
     override fun setupViews() {
-        binding.btnAddItem.setOnClickListener {
+        binding.btnAdd.setOnClickListener {
             showAddEditDialog(null)
         }
     }
@@ -45,30 +45,31 @@ class PunicaoAdminFragment : BaseAdminFragment<PunicaoEntity>() {
             .create()
 
         // Esconde o campo de tempo
-        dialogBinding.tilTempo.visibility = View.GONE
+        dialogBinding.timeInputLayout.visibility = View.GONE
 
         item?.let {
-            dialogBinding.etTexto.setText(it.text)
+            dialogBinding.editTextItem.setText(it.texto)
             val radioId = when (it.level) {
-                1 -> R.id.rbLeve
-                2 -> R.id.rbModerado
-                else -> R.id.rbExtremo
+                R.id.radioLevel1 -> 1
+                R.id.radioLevel2 -> 2
+                R.id.radioLevel3 -> 3
+                else -> 0
             }
             dialogBinding.radioGroupLevel.check(radioId)
         }
 
         dialog.setOnShowListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                val texto = dialogBinding.etTexto.text.toString().trim()
+                val texto = dialogBinding.editTextItem.text.toString().trim()
                 val level = when (dialogBinding.radioGroupLevel.checkedRadioButtonId) {
-                    R.id.rbLeve -> 1
-                    R.id.rbModerado -> 2
-                    R.id.rbExtremo -> 3
+                    R.id.radioLevel1 -> 1
+                    R.id.radioLevel2 -> 2
+                    R.id.radioLevel3 -> 3
                     else -> 0
                 }
 
                 if (texto.isEmpty()) {
-                    dialogBinding.etTexto.error = "O texto não pode ser vazio"
+                    dialogBinding.editTextItem.error = "O texto não pode ser vazio"
                     return@setOnClickListener
                 }
                 if (level == 0) {
@@ -77,8 +78,9 @@ class PunicaoAdminFragment : BaseAdminFragment<PunicaoEntity>() {
 
                 val newItem = PunicaoEntity(
                     id = item?.id ?: 0,
-                    text = texto,
+                    texto = texto,
                     level = level
+                    // Não há tempo para Punicao
                 )
 
                 lifecycleScope.launch {

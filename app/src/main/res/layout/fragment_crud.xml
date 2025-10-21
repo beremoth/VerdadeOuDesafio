@@ -10,10 +10,9 @@
         android:layout_height="wrap_content"
         android:text="Título do Painel"
         android:textAlignment="center"
-        android:textAppearance="?attr/textAppearanceHeadline6"
         android:padding="12dp"
         android:textColor="@android:color/black"
-        android:background="?attr/colorSurface"
+        android:background="@drawable/background_gradient"
         android:elevation="2dp" />
 
     <EditText

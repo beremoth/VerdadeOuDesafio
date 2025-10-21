@@ -1,6 +1,7 @@
 package com.example.verdadeoudesafio.admin
 
 import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.example.verdadeoudesafio.R
@@ -17,10 +18,10 @@ class PerguntaAdminFragment : BaseAdminFragment<PerguntaEntity>() {
 
     private val perguntaDao by lazy { db.perguntaDao() }
 
-    // 2. Implementa 'setupViewModelObservers' (agora 'setupObservers')
-    override fun setupViewModelObservers() {
+    // 2. Implementa
+    override fun setupObservers() {
         lifecycleScope.launch {
-            perguntaDao.getAllFlow().collectLatest { perguntas ->
+            perguntaDao.getAllFlow().collectLatest { perguntas -> // Unresolved reference 'getAllFlow'.
                 adapter.submitList(perguntas)
             }
         }
@@ -28,7 +29,7 @@ class PerguntaAdminFragment : BaseAdminFragment<PerguntaEntity>() {
 
     // 3. Implementa 'setupViews'
     override fun setupViews() {
-        binding.btnAddItem.setOnClickListener {
+        binding.btnAdd.setOnClickListener {
             showAddEditDialog(null)
         }
     }
@@ -49,31 +50,32 @@ class PerguntaAdminFragment : BaseAdminFragment<PerguntaEntity>() {
             .create()
 
         // Esconde o campo de tempo, pois Pergunta não usa
-        dialogBinding.tilTempo.visibility = View.GONE
+        dialogBinding.timeInputLayout.visibility = View.GONE
 
         // Preenche os dados se for edição
         item?.let {
-            dialogBinding.etTexto.setText(it.text)
+            dialogBinding.editTextItem.setText(it.texto)
             val radioId = when (it.level) {
-                1 -> R.id.rbLeve
-                2 -> R.id.rbModerado
-                else -> R.id.rbExtremo
+                R.id.radioLevel1 -> 1
+                R.id.radioLevel2 -> 2
+                R.id.radioLevel3 -> 3
+                else -> 0
             }
             dialogBinding.radioGroupLevel.check(radioId)
         }
 
         dialog.setOnShowListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                val texto = dialogBinding.etTexto.text.toString().trim()
+                val texto = dialogBinding.editTextItem.text.toString().trim()
                 val level = when (dialogBinding.radioGroupLevel.checkedRadioButtonId) {
-                    R.id.rbLeve -> 1
-                    R.id.rbModerado -> 2
-                    R.id.rbExtremo -> 3
+                    R.id.radioLevel1 -> 1
+                    R.id.radioLevel2 -> 2
+                    R.id.radioLevel3 -> 3
                     else -> 0
                 }
 
                 if (texto.isEmpty()) {
-                    dialogBinding.etTexto.error = "O texto não pode ser vazio"
+                    dialogBinding.editTextItem.error = "O texto não pode ser vazio"
                     return@setOnClickListener
                 }
                 if (level == 0) {
@@ -83,7 +85,7 @@ class PerguntaAdminFragment : BaseAdminFragment<PerguntaEntity>() {
 
                 val newItem = PerguntaEntity(
                     id = item?.id ?: 0,
-                    text = texto,
+                    texto = texto,
                     level = level
                 )
 

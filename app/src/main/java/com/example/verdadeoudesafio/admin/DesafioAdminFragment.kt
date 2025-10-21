@@ -17,16 +17,16 @@ class DesafioAdminFragment : BaseAdminFragment<DesafioEntity>() {
 
     private val desafioDao by lazy { db.desafioDao() }
 
-    override fun setupViewModelObservers() {
+    override fun setupObservers() {
         lifecycleScope.launch {
-            desafioDao.getAllFlow().collectLatest { desafios ->
+            desafioDao.getAllFlow().collectLatest { desafios -> // Unresolved reference 'getAllFlow'. Cannot infer type for this parameter. Please specify it explicitly. Cannot infer type for this parameter. Please specify it explicitly
                 adapter.submitList(desafios)
             }
         }
     }
 
     override fun setupViews() {
-        binding.btnAddItem.setOnClickListener {
+        binding.btnAdd.setOnClickListener {
             showAddEditDialog(null)
         }
     }
@@ -45,34 +45,46 @@ class DesafioAdminFragment : BaseAdminFragment<DesafioEntity>() {
             .create()
 
         // Desafio usa o campo de tempo
-        dialogBinding.tilTempo.visibility = View.VISIBLE
+        dialogBinding.timeInputLayout.visibility = View.VISIBLE
 
         item?.let {
-            dialogBinding.etTexto.setText(it.text)
-            dialogBinding.etTempo.setText(it.time?.toString() ?: "0")
-            val radioId = when (it.level) {
-                1 -> R.id.rbLeve
-                2 -> R.id.rbModerado
-                else -> R.id.rbExtremo
+            dialogBinding.editTextItem.setText(it.texto)
+            // ✅ Correto: converte tempo total em minutos e segundos
+            val totalSeconds = it.tempo
+            val minutes = totalSeconds / 60
+            val seconds = totalSeconds % 60
+
+            dialogBinding.editTempoMin.setText(if (minutes > 0) minutes.toString() else "")
+            dialogBinding.editTempoSeg.setText(if (seconds > 0) seconds.toString() else "")
+
+           val radioId = when (it.level) {
+                1 -> R.id.radioLevel1
+                2 -> R.id.radioLevel2
+                else -> R.id.radioLevel3
             }
             dialogBinding.radioGroupLevel.check(radioId)
         }
 
         dialog.setOnShowListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                val texto = dialogBinding.etTexto.text.toString().trim()
-                val tempoStr = dialogBinding.etTempo.text.toString()
-                val tempo = if (tempoStr.isEmpty()) 0 else tempoStr.toIntOrNull() ?: 0
+                val texto = dialogBinding.editTextItem.text.toString().trim()
+                val minText = dialogBinding.editTempoMin.text.toString().trim()
+                val secText = dialogBinding.editTempoSeg.text.toString().trim()
+
+                val minutes = if (minText.isEmpty()) 0 else minText.toIntOrNull() ?: 0
+                val seconds = if (secText.isEmpty()) 0 else secText.toIntOrNull() ?: 0
+
+                val tempo = minutes * 60 + seconds
 
                 val level = when (dialogBinding.radioGroupLevel.checkedRadioButtonId) {
-                    R.id.rbLeve -> 1
-                    R.id.rbModerado -> 2
-                    R.id.rbExtremo -> 3
+                    R.id.radioLevel1 -> 1
+                    R.id.radioLevel2 -> 2
+                    R.id.radioLevel3 -> 3
                     else -> 0
                 }
 
                 if (texto.isEmpty()) {
-                    dialogBinding.etTexto.error = "O texto não pode ser vazio"
+                    dialogBinding.editTextItem.error = "O texto não pode ser vazio"
                     return@setOnClickListener
                 }
                 if (level == 0) {
@@ -81,9 +93,9 @@ class DesafioAdminFragment : BaseAdminFragment<DesafioEntity>() {
 
                 val newItem = DesafioEntity(
                     id = item?.id ?: 0,
-                    text = texto,
+                    texto = texto,
                     level = level,
-                    time = tempo
+                    tempo = tempo
                 )
 
                 lifecycleScope.launch {

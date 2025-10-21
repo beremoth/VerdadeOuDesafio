@@ -27,7 +27,7 @@ class DatabaseInitializer(private val context: Context) {
                 scope.launch(Dispatchers.IO) {
                     val database = AppDatabase.getDatabase(context, this)
                     initializeJsonData(database)
-                    initializeRaspadinhas(database) // Chama a nova função
+                    initializeRaspadinhas(database)
                 }
             }
         }
@@ -66,12 +66,12 @@ class DatabaseInitializer(private val context: Context) {
 
                     when (type.lowercase()) {
                         "truth" -> {
-                            // IMPORTANTE: verifique se o nome do campo é "text" ou "texto"
-                            perguntaDao.insert(PerguntaEntity(text = text, level = level))
+
+                            perguntaDao.insert(PerguntaEntity(texto = text, level = level))
                         }
                         "dare" -> {
-                            // IMPORTANTE: verifique se o nome do campo é "time" ou "tempo"
-                            desafioDao.insert(DesafioEntity(text = text, level = level, time = duration))
+
+                            desafioDao.insert(DesafioEntity(texto = text, level = level, tempo = duration))
                         }
                     }
                 }
@@ -85,8 +85,8 @@ class DatabaseInitializer(private val context: Context) {
                     val item = punishmentsArray.getJSONObject(i)
                     val text = item.optString("text", "")
                     val level = item.optInt("level", 1)
-                    // IMPORTANTE: verifique se o nome do campo é "text" ou "texto"
-                    punicaoDao.insert(PunicaoEntity(text = text, level = level))
+
+                    punicaoDao.insert(PunicaoEntity(texto = text, level = level))
                 }
                 Log.d("DatabaseInitializer", "Punições carregadas de assets.")
             }
@@ -99,7 +99,7 @@ class DatabaseInitializer(private val context: Context) {
     // ESTA É A FUNÇÃO QUE MAPAIA E COPIA AS IMAGENS DO ASSETS
     private suspend fun initializeRaspadinhas(database: AppDatabase) {
         val raspadinhaDao = database.raspadinhaDao()
-        if (raspadinhaDao.count() > 0) {
+        if (raspadinhaDao.count() > 0) { //Unresolved reference 'compareTo'.
             Log.d("DatabaseInitializer", "Raspadinhas já existem no DB. Pulando.")
             return
         }

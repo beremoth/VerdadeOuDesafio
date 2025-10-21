@@ -2,7 +2,7 @@ package com.example.verdadeoudesafio.data.dao
 
 import androidx.room.*
 import com.example.verdadeoudesafio.data.entity.PerguntaEntity
-import com.example.verdadeoudesafio.data.entity.PunicaoEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PerguntaDao {
@@ -10,6 +10,13 @@ interface PerguntaDao {
     // 🔹 Retorna todas as perguntas
     @Query("SELECT * FROM perguntas")
     suspend fun getAll(): List<PerguntaEntity>
+
+    @Query("SELECT * FROM perguntas")
+    fun getAllFlow(): Flow<List<PerguntaEntity>>
+
+    // CONTAR
+    @Query("SELECT COUNT(id) FROM perguntas")
+    suspend fun count(): Int
 
     // 🔹 Insere nova pergunta (ou substitui se já existir o mesmo ID)
     @Insert(onConflict = OnConflictStrategy.REPLACE)

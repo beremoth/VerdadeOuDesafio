@@ -15,14 +15,14 @@ class AdminItemAdapter<T : TextLevelItem>(
 
     inner class ViewHolder(val binding: ItemAdminBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: T) {
-            binding.txtItemText.text = item.texto // MUDADO PARA 'texto'
-            binding.txtItemLevel.text = "Nível ${item.level}"
+            binding.txtItem.text = item.texto
 
-            if (item.tempo != null && item.tempo!! > 0) { // MUDADO PARA 'tempo'
-                binding.txtItemTime.visibility = View.VISIBLE
-                binding.txtItemTime.text = "${item.tempo}s" // MUDADO PARA 'tempo'
+
+            if (item.tempo != null && item.tempo!! > 0) {
+                binding.txtTempo.visibility = View.VISIBLE
+                binding.txtTempo.text = "${item.tempo}s"
             } else {
-                binding.txtItemTime.visibility = View.GONE
+                binding.txtTempo.visibility = View.GONE
             }
 
             binding.btnEdit.setOnClickListener { onEdit(item) }
@@ -49,7 +49,9 @@ class AdminItemAdapter<T : TextLevelItem>(
         }
 
         override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-            return oldItem == newItem
+            return oldItem.texto == newItem.texto &&
+                    oldItem.level == newItem.level &&
+                    oldItem.tempo == newItem.tempo
         }
     }
 }

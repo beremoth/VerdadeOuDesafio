@@ -21,7 +21,7 @@ interface RaspadinhaDao {
     @Query("DELETE FROM raspadinhas WHERE id = :id")
     suspend fun deleteById(id: Int)
 
-    @Query("SELECT * FROM raspadinhas ")
-    fun count()
+    @Query("SELECT COUNT(id) FROM raspadinhas")
+    suspend fun count(): Int
 
 }

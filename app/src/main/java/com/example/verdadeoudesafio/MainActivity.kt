@@ -50,19 +50,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Inicialização do Banco de Dados
-        db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "verdade_ou_desafio_db"
-        )
-        .fallbackToDestructiveMigration()
-        .build()
-
-        // Popula o DB se estiver vazio (apenas na primeira vez)
-        lifecycleScope.launch {
-            DatabaseInitializer.populateDatabaseIfEmpty(this@MainActivity, db)
-        }
 
         sharedPreferences = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
         initializeUI() // Encontra as Views
@@ -108,7 +95,7 @@ class MainActivity : AppCompatActivity() {
         startTimerButton.visibility = View.GONE // Esconde o botão do timer inicialmente
     }
 
-    // --- NOVO MÉTODO onResume ---
+
     override fun onResume() {
         super.onResume()
         // Recarrega as configurações e atualiza a UI toda vez que a Activity volta ao foco
