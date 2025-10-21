@@ -1,12 +1,16 @@
 package com.example.verdadeoudesafio.admin
 
+import android.app.Activity
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,33 +30,25 @@ class RaspadinhaAdminFragment : Fragment() {
     private var _binding: FragmentAdminRaspadinhaBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var raspadinhaAdapter: RaspadinhaAdminAdapter
-
+    private lateinit var adapter: RaspadinhaAdminAdapter
     private val db by lazy {
-        Room.databaseBuilder(requireContext(), AppDatabase::class.java, "verdade_ou_desafio_db")
+        Room.databaseBuilder(
+            requireContext().applicationContext,
+            AppDatabase::class.java,
+            "verdade_ou_desafio_db"
+        )
             .fallbackToDestructiveMigration()
             .build()
     }
 
-    // 1. Este é o 'lançador' que abre a galeria e espera um resultado
-    private val galleryLauncher = registerForActivityResult(
-        ActivityResultContracts.GetContent() // Abre a galeria
-    ) { uri: Uri? ->
-        if (uri == null) return@registerForActivityResult // Usuário cancelou
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            // 2. Chama a função para copiar a imagem
-            val newPath = saveImageToInternalStorage(uri)
-
-            if (newPath != null) {
-                // 3. Salva o NOVO caminho (para a cópia) no banco
-                db.raspadinhaDao().insert(
-                    RaspadinhaEntity(imagePath = newPath)
-                )
-                Toast.makeText(requireContext(), "Imagem salva!", Toast.LENGTH_SHORT).show()
-                refreshList() // Atualiza a lista na tela
-            } else {
-                Toast.makeText(requireContext(), "Falha ao salvar imagem.", Toast.LENGTH_SHORT).show()
+    // Prepara o "lançador" para pegar a imagem da galeria
+    private val imagePickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                // Imagem selecionada, agora vamos copiá-la
+                copyImageToInternalStorage(uri)
             }
         }
     }
@@ -64,76 +60,122 @@ class RaspadinhaAdminFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setupRecycler()
-        setupButtons()
-        refreshList()
+        setupRecyclerView()
+        setupAddButton()
+        loadImagesFromDb()
     }
 
-    private fun setupRecycler() {
-        raspadinhaAdapter = RaspadinhaAdminAdapter(
+    private fun setupRecyclerView() {
+        adapter = RaspadinhaAdminAdapter(
             mutableListOf(),
-            onDelete = { entity ->
-                // Lógica para deletar a imagem
-                lifecycleScope.launch(Dispatchers.IO) {
-                    db.raspadinhaDao().delete(entity)
-                    // Deleta o arquivo físico do armazenamento
-                    try {
-                        File(entity.imagePath).delete()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                    // Atualiza a UI na thread principal
-                    withContext(Dispatchers.Main) {
-                        refreshList()
-                    }
-                }
+            onDelete = { item ->
+                showDeleteConfirmation(item)
             }
         )
         binding.recyclerViewRaspadinhas.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewRaspadinhas.adapter = raspadinhaAdapter
+        binding.recyclerViewRaspadinhas.adapter = adapter
     }
 
-    private fun setupButtons() {
-        binding.btnAddImage.setOnClickListener {
-            // Inicia o processo: abre a galeria
-            galleryLauncher.launch("image/*")
+    private fun setupAddButton() {
+        binding.btnAddRaspadinha.setOnClickListener {
+            // Cria uma Intent para abrir a galeria
+            val intent = android.content.Intent(android.content.Intent.ACTION_GET_CONTENT)
+            intent.type = "image/*" // Permite selecionar qualquer tipo de imagem
+            imagePickerLauncher.launch(intent) // Lança o seletor de imagem
         }
     }
 
-    private fun refreshList() {
+    private fun loadImagesFromDb() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val items = db.raspadinhaDao().getAll()
+            val imageList = db.raspadinhaDao().getAll()
             withContext(Dispatchers.Main) {
-                raspadinhaAdapter.updateList(items)
+                adapter.updateList(imageList)
             }
         }
     }
 
-    /**
-     * Copia a imagem da galeria (URI) para o armazenamento interno do app
-     * e retorna o caminho absoluto do novo arquivo.
-     */
-    private suspend fun saveImageToInternalStorage(uri: Uri): String? {
-        return withContext(Dispatchers.IO) {
+    private fun copyImageToInternalStorage(uri: Uri) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val fileName = getFileName(requireContext(), uri) ?: "raspadinha_${System.currentTimeMillis()}.jpg"
+            val directory = File(requireContext().filesDir, "raspadinhas")
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+            val destinationFile = File(directory, fileName)
+
             try {
-                val inputStream = requireContext().contentResolver.openInputStream(uri)
-                val fileName = "raspadinha_${System.currentTimeMillis()}.jpg"
-                val file = File(requireContext().filesDir, fileName) // Salva na pasta 'files' privada
-                val outputStream = FileOutputStream(file)
+                // Copia o stream da imagem (da galeria) para o novo arquivo (no app)
+                requireContext().contentResolver.openInputStream(uri)?.use { input ->
+                    FileOutputStream(destinationFile).use { output ->
+                        input.copyTo(output)
+                    }
+                }
 
-                inputStream?.copyTo(outputStream)
+                // Se a cópia deu certo, salva o CAMINHO no banco de dados
+                val newRaspadinha = RaspadinhaEntity(imagePath = destinationFile.absolutePath)
+                db.raspadinhaDao().insert(newRaspadinha)
 
-                inputStream?.close()
-                outputStream.close()
+                // Recarrega a lista na thread principal
+                withContext(Dispatchers.Main) {
+                    loadImagesFromDb()
+                }
 
-                // Retorna o caminho para o NOVO arquivo
-                file.absolutePath
             } catch (e: IOException) {
-                e.printStackTrace()
-                null // Retorna nulo se der erro
+                Log.e("RaspadinhaAdmin", "Erro ao copiar imagem: ${e.message}", e)
+                withContext(Dispatchers.Main) {
+                    // Mostra erro
+                }
             }
         }
+    }
+
+    private fun showDeleteConfirmation(item: RaspadinhaEntity) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirmar Exclusão")
+            .setMessage("Tem certeza que deseja deletar esta imagem?")
+            .setPositiveButton("Deletar") { _, _ ->
+                deleteImage(item)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun deleteImage(item: RaspadinhaEntity) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                // 1. Deleta o arquivo físico do armazenamento interno
+                val file = File(item.imagePath)
+                if (file.exists()) {
+                    file.delete()
+                }
+
+                // 2. Deleta a referência do banco de dados
+                db.raspadinhaDao().delete(item)
+
+                // 3. Recarrega a lista
+                withContext(Dispatchers.Main) {
+                    loadImagesFromDb()
+                }
+            } catch (e: Exception) {
+                Log.e("RaspadinhaAdmin", "Erro ao deletar imagem: ${e.message}", e)
+            }
+        }
+    }
+
+    // Função auxiliar para tentar pegar o nome original do arquivo
+    private fun getFileName(context: Context, uri: Uri): String? {
+        if (uri.scheme == "content") {
+            val cursor = context.contentResolver.query(uri, null, null, null, null)
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (nameIndex != -1) {
+                        return it.getString(nameIndex)
+                    }
+                }
+            }
+        }
+        return uri.lastPathSegment?.substringAfterLast('/')
     }
 
     override fun onDestroyView() {

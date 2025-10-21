@@ -17,7 +17,9 @@ class RaspadinhaAdminAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemAdminRaspadinhaBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
         return ViewHolder(binding)
     }
@@ -25,16 +27,22 @@ class RaspadinhaAdminAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 
+        // Carrega a imagem do arquivo salvo no armazenamento interno
         try {
-            // Carrega a imagem a partir do caminho salvo no DB
             val file = File(item.imagePath)
-            holder.binding.imgRaspadinha.setImageURI(Uri.fromFile(file))
+            if (file.exists()) {
+                holder.binding.imgPreview.setImageURI(Uri.fromFile(file))
+            } else {
+                holder.binding.imgPreview.setImageResource(android.R.drawable.ic_dialog_alert) // Imagem de erro
+            }
         } catch (e: Exception) {
-            // Se der erro, mostra um ícone padrão (opcional)
-            // holder.binding.imgRaspadinha.setImageResource(R.drawable.ic_error)
+            holder.binding.imgPreview.setImageResource(android.R.drawable.ic_dialog_alert)
         }
 
-        holder.binding.btnDeleteRaspadinha.setOnClickListener { onDelete(item) }
+        holder.binding.txtImagePath.text = item.imagePath.substringAfterLast('/') // Mostra só o nome do arquivo
+        holder.binding.btnDeleteImage.setOnClickListener {
+            onDelete(item)
+        }
     }
 
     override fun getItemCount(): Int = items.size
