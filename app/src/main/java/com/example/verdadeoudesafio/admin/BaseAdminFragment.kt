@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.verdadeoudesafio.data.database.AppDatabase
 import com.example.verdadeoudesafio.databinding.FragmentCrudBinding
 import kotlinx.coroutines.launch
-import com.example.verdadeoudesafio.admin.TextLevelItem
+
 
 abstract class BaseAdminFragment<T : TextLevelItem> : Fragment() {
 

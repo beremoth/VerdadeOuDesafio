@@ -15,13 +15,9 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
 import com.example.verdadeoudesafio.data.database.AppDatabase
-import com.example.verdadeoudesafio.data.database.DatabaseInitializer
-import com.example.verdadeoudesafio.game.GameManager
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -36,12 +32,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var levelText: TextView // TextView para mostrar o nível
     private lateinit var timerText: TextView
     private lateinit var startTimerButton: Button
-    private lateinit var db: AppDatabase
-    private val gameManager by lazy { GameManager(this) }
+    private val db by lazy { AppDatabase.getDatabase(applicationContext, lifecycleScope) }
+    private val gameManager by lazy { GameManager(db) }
 
     private var players: MutableList<String> = mutableListOf()
     private var currentPlayerIndex = 0
-    private var currentLevel = 2 // Nível padrão
+    private var currentLevel = 2
     private var currentTimer: CountDownTimer? = null
     private var currentQuestionDuration: Int = 0
     private var isGameStarted = false
@@ -173,21 +169,20 @@ class MainActivity : AppCompatActivity() {
 
             val questionTextValue = when (type) {
                 "truth" -> {
-                    val pergunta = gameManager.getRandomPergunta(currentLevel) // Usa o nível
+                    val pergunta = gameManager.getRandomPergunta(currentLevel)
                     pergunta?.texto ?: "Nenhuma pergunta de verdade disponível para este nível!"
                 }
                 "dare" -> {
-                    val desafio = gameManager.getRandomDesafio(currentLevel) // Usa o nível
+                    val desafio = gameManager.getRandomDesafio(currentLevel)
                     if (desafio != null) {
-                        currentQuestionDuration = desafio.tempo
-                        if (desafio.tempo > 0) {
-                            val min = desafio.tempo / 60
-                            val sec = desafio.tempo % 60
+                        currentQuestionDuration = desafio.tempo ?: 0
+                        if (currentQuestionDuration > 0) {
+                            val min = currentQuestionDuration / 60
+                            val sec = currentQuestionDuration % 60
                             timerText.text = String.format("%02d:%02d", min, sec)
                             timerText.visibility = View.VISIBLE
                             startTimerButton.visibility = View.VISIBLE
                         } else {
-                            // Garante que o timer seja escondido se não houver duração
                             timerText.visibility = View.GONE
                             startTimerButton.visibility = View.GONE
                         }

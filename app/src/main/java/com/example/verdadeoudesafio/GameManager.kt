@@ -1,38 +1,34 @@
-package com.example.verdadeoudesafio.game
+package com.example.verdadeoudesafio
 
-import android.content.Context
-import com.example.verdadeoudesafio.data.DataRepository
-import com.example.verdadeoudesafio.data.entity.PerguntaEntity
+import com.example.verdadeoudesafio.data.database.AppDatabase
 import com.example.verdadeoudesafio.data.entity.DesafioEntity
+import com.example.verdadeoudesafio.data.entity.PerguntaEntity
 import com.example.verdadeoudesafio.data.entity.PunicaoEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlin.random.Random
+import com.example.verdadeoudesafio.data.entity.RaspadinhaEntity
 
-class GameManager(private val context: Context) {
+class GameManager(private val db: AppDatabase) { //Constructor parameter is never used as a property
 
-    private val repository = DataRepository.getInstance(context)
+    private val perguntaDao = db.perguntaDao()
+    private val desafioDao = db.desafioDao()
+    private val punicaoDao = db.punicaoDao()
+    private val raspadinhaDao = db.raspadinhaDao()
 
-    suspend fun getRandomPergunta(level: Int): PerguntaEntity? = withContext(Dispatchers.IO) {
-        val perguntas = repository.getPerguntasPorLevel(level)
-        perguntas.randomOrNull()
+    suspend fun getRandomPergunta(level: Int): PerguntaEntity? {
+        // Agora chama a função correta
+        return perguntaDao.getRandomByLevel(level)
     }
 
-    suspend fun getRandomDesafio(level: Int): DesafioEntity? = withContext(Dispatchers.IO) {
-        val desafios = repository.getDesafiosPorLevel(level)
-        desafios.randomOrNull()
+    suspend fun getRandomDesafio(level: Int): DesafioEntity? {
+        // Agora chama a função correta
+        return desafioDao.getRandomByLevel(level)
     }
 
-    suspend fun getRandomPunicao(level: Int): PunicaoEntity? = withContext(Dispatchers.IO) {
-        val punicoes = repository.getPunicoesPorLevel(level)
-        punicoes.randomOrNull()
+    suspend fun getRandomPunicao(level: Int): PunicaoEntity? {
+        // Agora chama a função correta
+        return punicaoDao.getRandomByLevel(level)
     }
 
-    suspend fun getRandomPerguntaOuDesafio(level: Int): String = withContext(Dispatchers.IO) { // Agora recebe level
-        if (Random.nextBoolean()) {
-            getRandomPergunta(level)?.texto ?: "Sem perguntas disponíveis para este nível" // CORRETO
-        } else {
-            getRandomDesafio(level)?.texto ?: "Sem desafios disponíveis para este nível" // CORRETO
-        }
+    suspend fun getRandomRaspadinha(): RaspadinhaEntity? {
+        return raspadinhaDao.getRandom()
     }
 }

@@ -6,38 +6,38 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PerguntaDao {
-
-    // 🔹 Retorna todas as perguntas
     @Query("SELECT * FROM perguntas")
     suspend fun getAll(): List<PerguntaEntity>
 
-    @Query("SELECT * FROM perguntas")
+    @Query("SELECT * FROM perguntas ORDER BY level, texto")
     fun getAllFlow(): Flow<List<PerguntaEntity>>
 
-    // CONTAR
+    // --- CORRIGIDO O TIPO DE RETORNO ---
+    @Query("SELECT * FROM perguntas ORDER BY RANDOM() LIMIT 1")
+    suspend fun getRandom(): PerguntaEntity? // Estava PerguntaDao
+
+    // --- ADICIONADA FUNÇÃO FALTANTE ---
+    @Query("SELECT * FROM perguntas WHERE level <= :level ORDER BY RANDOM() LIMIT 1")
+    suspend fun getRandomByLevel(level: Int): PerguntaEntity?
+
     @Query("SELECT COUNT(id) FROM perguntas")
     suspend fun count(): Int
 
-    // 🔹 Insere nova pergunta (ou substitui se já existir o mesmo ID)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(perguntas: PerguntaEntity)
 
     @Query("SELECT * FROM perguntas WHERE level = :level")
     suspend fun getByLevel(level: Int): List<PerguntaEntity>
 
-    // 🔹 Atualiza pergunta existente
     @Update
     suspend fun update(perguntas: PerguntaEntity)
 
-    // 🔹 Deleta pergunta específica
     @Delete
     suspend fun delete(perguntas: PerguntaEntity)
 
-    // 🔹 Deleta pergunta pelo ID
     @Query("DELETE FROM perguntas WHERE id = :id")
     suspend fun deleteById(id: Int)
 
-    // 🔹 Deleta todas as perguntas
     @Query("DELETE FROM perguntas")
     suspend fun deleteAll()
 }

@@ -22,7 +22,7 @@ import kotlinx.coroutines.Dispatchers
         PunicaoEntity::class,
         RaspadinhaEntity::class
     ],
-    version = 5,
+    version = 7,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

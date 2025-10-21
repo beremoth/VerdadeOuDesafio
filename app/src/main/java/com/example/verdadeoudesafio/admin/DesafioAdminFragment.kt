@@ -19,7 +19,7 @@ class DesafioAdminFragment : BaseAdminFragment<DesafioEntity>() {
 
     override fun setupObservers() {
         lifecycleScope.launch {
-            desafioDao.getAllFlow().collectLatest { desafios -> // Unresolved reference 'getAllFlow'. Cannot infer type for this parameter. Please specify it explicitly. Cannot infer type for this parameter. Please specify it explicitly
+            desafioDao.getAllFlow().collectLatest { desafios ->
                 adapter.submitList(desafios)
             }
         }
@@ -50,7 +50,7 @@ class DesafioAdminFragment : BaseAdminFragment<DesafioEntity>() {
         item?.let {
             dialogBinding.editTextItem.setText(it.texto)
             // ✅ Correto: converte tempo total em minutos e segundos
-            val totalSeconds = it.tempo
+            val totalSeconds = it.tempo ?: 0
             val minutes = totalSeconds / 60
             val seconds = totalSeconds % 60
 

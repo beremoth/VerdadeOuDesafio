@@ -9,5 +9,5 @@ data class DesafioEntity(
     @PrimaryKey(autoGenerate = true) override val id: Int = 0,
     override val texto: String,
     override val level: Int,
-    override val tempo: Int // Campo original
+    override val tempo: Int? // Campo original
 ) : TextLevelItem

@@ -6,15 +6,18 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PunicaoDao {
-
     @Query("SELECT * FROM punicoes")
     suspend fun getAll(): List<PunicaoEntity>
 
-    @Query("SELECT * FROM punicoes")
+    @Query("SELECT * FROM punicoes ORDER BY level, texto")
     fun getAllFlow(): Flow<List<PunicaoEntity>>
 
     @Query("SELECT * FROM punicoes WHERE level = :level")
     suspend fun getByLevel(level: Int): List<PunicaoEntity>
+
+    // --- ADICIONADA FUNÇÃO FALTANTE ---
+    @Query("SELECT * FROM punicoes WHERE level <= :level ORDER BY RANDOM() LIMIT 1")
+    suspend fun getRandomByLevel(level: Int): PunicaoEntity?
 
     @Insert
     suspend fun insert(punicoes: PunicaoEntity)
