@@ -22,7 +22,19 @@ class PerguntaAdminFragment : BaseAdminFragment<PerguntaEntity>() {
     override fun setupObservers() {
         lifecycleScope.launch {
             perguntaDao.getAllFlow().collectLatest { perguntas ->
-                adapter.submitList(perguntas)
+                val grouped = perguntas.groupBy { it.level }
+                val list = mutableListOf<AdminListItem>()
+                // Ordena os níveis: 1, 2, 3
+                listOf(1, 2, 3).forEach { level ->
+                    if (grouped.containsKey(level)) {
+                        list.add(AdminListItem.Header(level))
+                        grouped[level]!!.forEach { item ->
+                            list.add(AdminListItem.Item(item))
+                        }
+                    }
+                }
+                @Suppress("UNCHECKED_CAST")
+                adapter.submitList(list as MutableList<AdminListItem>)
             }
         }
     }

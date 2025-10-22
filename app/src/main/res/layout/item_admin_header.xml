@@ -9,6 +9,6 @@
     android:paddingBottom="4dp"
     android:textSize="18sp"
     android:textStyle="bold"
-    android:textColor="@color/black"
+    android:textColor="@color/white"
     android:background="@drawable/background_gradient" />
 

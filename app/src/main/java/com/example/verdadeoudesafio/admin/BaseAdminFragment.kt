@@ -10,16 +10,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.verdadeoudesafio.data.database.AppDatabase
 import com.example.verdadeoudesafio.databinding.FragmentCrudBinding
+
 import kotlinx.coroutines.launch
 
 
-abstract class BaseAdminFragment<T : TextLevelItem> : Fragment() {
+abstract class BaseAdminFragment<T : TextLevelItem > : Fragment() {
 
     private var _binding: FragmentCrudBinding? = null
     protected val binding get() = _binding!!
 
 
-    protected lateinit var adapter: AdminItemAdapter<T>
+    protected lateinit var adapter: AdminItemAdapter
 
     protected val db by lazy {
         AppDatabase.getDatabase(requireContext().applicationContext, lifecycleScope)
@@ -51,8 +52,8 @@ abstract class BaseAdminFragment<T : TextLevelItem> : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = AdminItemAdapter(
-            onEdit = { item -> showAddEditDialog(item) },
-            onDelete = { item -> showDeleteConfirmation(item) }
+            onEdit = { item -> showAddEditDialog(item as T) },
+            onDelete = { item -> showDeleteConfirmation(item as T) }
         )
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter

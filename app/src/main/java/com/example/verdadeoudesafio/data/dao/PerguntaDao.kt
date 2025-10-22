@@ -14,7 +14,7 @@ interface PerguntaDao {
 
     // --- CORRIGIDO O TIPO DE RETORNO ---
     @Query("SELECT * FROM perguntas ORDER BY RANDOM() LIMIT 1")
-    suspend fun getRandom(): PerguntaEntity? // Estava PerguntaDao
+    suspend fun getRandom(): PerguntaEntity?
 
     // --- ADICIONADA FUNÇÃO FALTANTE ---
     @Query("SELECT * FROM perguntas WHERE level = :level ORDER BY RANDOM() LIMIT 1")
