@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.verdadeoudesafio.data.database.AppDatabase
 import com.example.verdadeoudesafio.databinding.FragmentCrudBinding
-import com.example.verdadeoudesafio.databinding.ItemAdminHeaderBinding
 import kotlinx.coroutines.launch
 
 
@@ -34,8 +33,7 @@ abstract class BaseAdminFragment<T : TextLevelItem> : Fragment() {
     abstract suspend fun deleteItemFromDb(item: T)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentCrudBinding.inflate(inflater, container, false); ItemAdminHeaderBinding.inflate(inflater, container, false)
-
+        _binding = FragmentCrudBinding.inflate(inflater, container, false)
 
         return binding.root
     }
