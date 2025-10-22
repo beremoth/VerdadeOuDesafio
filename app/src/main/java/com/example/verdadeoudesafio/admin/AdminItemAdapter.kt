@@ -13,10 +13,9 @@ class AdminItemAdapter<T : TextLevelItem>(
     private val onDelete: (T) -> Unit
 ) : ListAdapter<T, AdminItemAdapter<T>.ViewHolder>(DiffCallback()) {
 
-    inner class ViewHolder(val binding: ItemAdminBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: ItemAdminBinding ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: T) {
             binding.txtItem.text = item.texto
-
 
             if (item.tempo != null && item.tempo!! > 0) {
                 binding.txtTempo.visibility = View.VISIBLE

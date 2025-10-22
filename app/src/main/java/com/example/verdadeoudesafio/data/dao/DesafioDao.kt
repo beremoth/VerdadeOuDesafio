@@ -19,7 +19,7 @@ interface DesafioDao {
     suspend fun getRandom(): DesafioEntity?
 
     // --- ADICIONADA FUNÇÃO FALTANTE ---
-    @Query("SELECT * FROM desafios WHERE level <= :level ORDER BY RANDOM() LIMIT 1")
+    @Query("SELECT * FROM desafios WHERE level = :level ORDER BY RANDOM() LIMIT 1")
     suspend fun getRandomByLevel(level: Int): DesafioEntity?
 
     @Insert

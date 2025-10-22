@@ -18,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.verdadeoudesafio.data.database.AppDatabase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,11 +31,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dareButton: Button
     private lateinit var skipButton: Button
     private lateinit var settingsButton: Button
-    private lateinit var levelText: TextView // TextView para mostrar o nível
+    private lateinit var levelText: TextView
     private lateinit var timerText: TextView
     private lateinit var startTimerButton: Button
-    private val db by lazy { AppDatabase.getDatabase(applicationContext, lifecycleScope) }
-    private val gameManager by lazy { GameManager(db) }
+    private lateinit var db: AppDatabase
+    private lateinit var gameManager: GameManager
+
 
     private var players: MutableList<String> = mutableListOf()
     private var currentPlayerIndex = 0
@@ -48,13 +51,24 @@ class MainActivity : AppCompatActivity() {
 
 
         sharedPreferences = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
-        initializeUI() // Encontra as Views
-        requestVibrationPermissionIfNeeded() // Pede permissão se necessário
+        initializeUI()
+        requestVibrationPermissionIfNeeded()
 
-        // --- Carrega dados iniciais ---
-        // loadPlayers() // Movido para onResume para atualizar após Settings
-        // updatePlayerText() // Movido para onResume
-        // loadLevel() // Movido para onResume
+
+        lifecycleScope.launch {
+            // Cria o banco e força a inicialização
+            db = withContext(Dispatchers.IO) {
+                AppDatabase.getDatabase(applicationContext)
+            }
+
+            // Força a execução do callback se for o primeiro uso
+            withContext(Dispatchers.IO) {
+                db.openHelper.writableDatabase // Garante que o DB físico é criado
+            }
+
+            gameManager = GameManager(db)
+        }
+
 
 
         // Configuração dos botões

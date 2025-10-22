@@ -16,9 +16,8 @@ import java.io.InputStream
 
 class DatabaseInitializer(private val context: Context) {
 
-    // A função getCallback() foi removida daqui
+    // A função getCallback() foi removida
 
-    // Função para ler o JSON do ASSETS
     private fun loadJSON(fileName: String): String {
         return try {
             context.assets.open(fileName).bufferedReader().use { it.readText() }
@@ -33,7 +32,7 @@ class DatabaseInitializer(private val context: Context) {
         try {
             val jsonString = loadJSON("truth_or_dare.json")
             if (jsonString.isEmpty()) {
-                 Log.e("DatabaseInitializer", "truth_or_dare.json está vazio ou não foi encontrado em assets.")
+                Log.e("DatabaseInitializer", "truth_or_dare.json está vazio ou não foi encontrado em assets.")
                 return
             }
 
@@ -42,7 +41,6 @@ class DatabaseInitializer(private val context: Context) {
             val desafioDao = database.desafioDao()
             val punicaoDao = database.punicaoDao()
 
-            // Popula Perguntas e Desafios (questions)
             if (root.has("questions") && (perguntaDao.count() == 0 || desafioDao.count() == 0)) {
                 val questionsArray = root.getJSONArray("questions")
                 for (i in 0 until questionsArray.length()) {
@@ -63,10 +61,9 @@ class DatabaseInitializer(private val context: Context) {
                 }
                 Log.d("DatabaseInitializer", "Perguntas/Desafios carregados de assets.")
             } else {
-                 Log.d("DatabaseInitializer", "JSON não tem 'questions' ou perguntas/desafios já populados.")
+                Log.d("DatabaseInitializer", "JSON não tem 'questions' ou perguntas/desafios já populados.")
             }
 
-            // Popula Punições (punishments)
             if (root.has("punishments") && punicaoDao.count() == 0) {
                 val punishmentsArray = root.getJSONArray("punishments")
                 for (i in 0 until punishmentsArray.length()) {
@@ -78,7 +75,7 @@ class DatabaseInitializer(private val context: Context) {
                 }
                 Log.d("DatabaseInitializer", "Punições carregadas de assets.")
             } else {
-                 Log.d("DatabaseInitializer", "JSON não tem 'punishments' ou punições já populadas.")
+                Log.d("DatabaseInitializer", "JSON não tem 'punishments' ou punições já populadas.")
             }
 
         } catch (e: Exception) {

@@ -17,7 +17,7 @@ interface PerguntaDao {
     suspend fun getRandom(): PerguntaEntity? // Estava PerguntaDao
 
     // --- ADICIONADA FUNÇÃO FALTANTE ---
-    @Query("SELECT * FROM perguntas WHERE level <= :level ORDER BY RANDOM() LIMIT 1")
+    @Query("SELECT * FROM perguntas WHERE level = :level ORDER BY RANDOM() LIMIT 1")
     suspend fun getRandomByLevel(level: Int): PerguntaEntity?
 
     @Query("SELECT COUNT(id) FROM perguntas")

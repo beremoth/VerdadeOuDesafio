@@ -17,10 +17,10 @@ interface PunicaoDao {
     suspend fun getByLevel(level: Int): List<PunicaoEntity>
 
     // --- FUNÇÃO ADICIONADA --- (Para o Jogo)
-    @Query("SELECT * FROM punicoes WHERE level <= :level ORDER BY RANDOM() LIMIT 1")
-    suspend fun getRandomByLevel(level: Int): PunicaoEntity? // Estava retornando PerguntaEntity
+    @Query("SELECT * FROM punicoes WHERE level = :level ORDER BY RANDOM() LIMIT 1")
+    suspend fun getRandomByLevel(level: Int): PunicaoEntity?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) // Adicionado 'onConflict'
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(punicoes: PunicaoEntity)
 
     @Update

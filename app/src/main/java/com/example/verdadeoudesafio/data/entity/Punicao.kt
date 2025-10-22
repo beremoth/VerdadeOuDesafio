@@ -9,5 +9,4 @@ data class PunicaoEntity(
     @PrimaryKey(autoGenerate = true) override val id: Int = 0,
     override val texto: String,
     override val level: Int,
-    val timestamp: Long = System.currentTimeMillis()
 ): TextLevelItem

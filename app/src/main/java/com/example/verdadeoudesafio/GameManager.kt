@@ -6,7 +6,7 @@ import com.example.verdadeoudesafio.data.entity.PerguntaEntity
 import com.example.verdadeoudesafio.data.entity.PunicaoEntity
 import com.example.verdadeoudesafio.data.entity.RaspadinhaEntity
 
-class GameManager(db: AppDatabase) { // Removido 'private val'
+class GameManager(db: AppDatabase) {
 
     private val perguntaDao = db.perguntaDao()
     private val desafioDao = db.desafioDao()

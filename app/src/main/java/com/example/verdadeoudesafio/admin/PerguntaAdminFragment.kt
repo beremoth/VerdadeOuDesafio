@@ -21,7 +21,7 @@ class PerguntaAdminFragment : BaseAdminFragment<PerguntaEntity>() {
     // 2. Implementa
     override fun setupObservers() {
         lifecycleScope.launch {
-            perguntaDao.getAllFlow().collectLatest { perguntas -> // Unresolved reference 'getAllFlow'.
+            perguntaDao.getAllFlow().collectLatest { perguntas ->
                 adapter.submitList(perguntas)
             }
         }

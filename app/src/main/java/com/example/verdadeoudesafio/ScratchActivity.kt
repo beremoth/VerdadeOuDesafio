@@ -1,5 +1,6 @@
 package com.example.verdadeoudesafio
 
+
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -19,16 +20,19 @@ import java.io.IOException
 class ScratchActivity : AppCompatActivity() {
 
 
-    private val db by lazy {
-        AppDatabase.getDatabase(applicationContext, lifecycleScope)
-    }
-    private val gameManager by lazy { GameManager(db) }
-
+    private lateinit var db: AppDatabase
+    private lateinit var gameManager: GameManager
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.scratch_activity)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            db = AppDatabase.getDatabase(applicationContext, this)
+            gameManager = GameManager(db)
+        }
+
 
         val bgImage = findViewById<ImageView>(R.id.bgImage)
         val scratchView = findViewById<ScratchView>(R.id.scratchView)
@@ -43,7 +47,7 @@ class ScratchActivity : AppCompatActivity() {
             }
 
             try {
-                // 2. Não existe mais "when", pois SÓ temos um tipo de imagem (Path)
+                // 2. Não existe mais "when", pois SÓ temos um tipo (Path)
                 Log.d("ScratchActivity", "Carregando do DB/Path: ${raspadinha.imagePath}")
                 val file = File(raspadinha.imagePath)
                 val uri = Uri.fromFile(file)
@@ -61,15 +65,11 @@ class ScratchActivity : AppCompatActivity() {
     }
 
     /**
-     * Esta função agora é muito mais simples.
-     * Ela apenas pede ao GameManager uma imagem aleatória.
+     * Esta função agora pede ao GameManager uma imagem aleatória do banco.
      */
     private suspend fun getImagemAleatoria(): RaspadinhaEntity? {
         return withContext(Dispatchers.IO) {
-            // 3. USA A FUNÇÃO DO GAMEMANAGER
             gameManager.getRandomRaspadinha()
         }
     }
-
-    // A função 'findImageFilesInAssets' foi removida, pois não é mais necessária.
 }
