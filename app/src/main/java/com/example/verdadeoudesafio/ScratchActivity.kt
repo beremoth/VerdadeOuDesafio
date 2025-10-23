@@ -49,7 +49,7 @@ class ScratchActivity : AppCompatActivity() {
 
         // Verifica a porcentagem raspada a cada toque
         scratchView.setOnScratchListener { percentage ->
-            if (percentage > 40f) {
+            if (percentage > 30f) {
                 btnSortearOutra.visibility = View.VISIBLE
             }
         }
