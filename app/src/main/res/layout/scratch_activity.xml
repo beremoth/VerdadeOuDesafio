@@ -1,23 +1,44 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient">
+    android:background="@drawable/background_gradient"
+    android:padding="16dp">
 
-    <!-- Imagem de fundo (aleatória) -->
-    <ImageView
-        android:id="@+id/bgImage"
-        android:layout_marginTop="100dp"
+    <!-- Card estilizado para a raspadinha -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="395dp"
-        android:scaleType="centerCrop" /> <!-- valor padrão -->
+        android:layout_height="420dp"
+        android:layout_gravity="center"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/white">
 
+        <!-- Imagem de fundo (conteúdo surpresa) -->
+        <ImageView
+            android:id="@+id/bgImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="Surpresa" />
 
-    <!-- Camada de raspadinha -->
-    <com.example.verdadeoudesafio.ScratchView
-        android:id="@+id/scratchView"
-        android:layout_marginTop="100dp"
-        android:layout_width="match_parent"
-        android:layout_height="395dp" />
+        <!-- Camada de raspadinha -->
+        <com.example.verdadeoudesafio.ScratchView
+            android:id="@+id/scratchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
+    </androidx.cardview.widget.CardView>
+
+    <!-- Botão "Sortear outra" (inicialmente invisível) -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSortearOutra"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:text="@string/Sortear"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        android:background="@drawable/button_gradient" />
 </FrameLayout>
