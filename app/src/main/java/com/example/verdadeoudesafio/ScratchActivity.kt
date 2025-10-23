@@ -1,11 +1,11 @@
 package com.example.verdadeoudesafio
 
-
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.verdadeoudesafio.data.database.AppDatabase
@@ -14,48 +14,31 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.IOException
-
 
 class ScratchActivity : AppCompatActivity() {
 
-
     private lateinit var db: AppDatabase
     private lateinit var gameManager: GameManager
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.scratch_activity)
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            db = AppDatabase.getDatabase(applicationContext, this)
-            gameManager = GameManager(db)
-        }
-
-
         val bgImage = findViewById<ImageView>(R.id.bgImage)
         val scratchView = findViewById<ScratchView>(R.id.scratchView)
 
         lifecycleScope.launch {
-            // 1. Busca UMA imagem aleatória (do banco) através do GameManager
-            val raspadinha = getImagemAleatoria() // Agora retorna RaspadinhaEntity?
+            db = AppDatabase.getDatabase(applicationContext)
+            gameManager = GameManager(db)
+            val raspadinha = getImagemAleatoriaSegura()
 
-            if (raspadinha == null) {
-                Log.e("ScratchActivity", "Nenhuma imagem encontrada no banco de dados.")
-                return@launch
-            }
-
-            try {
-                // 2. Não existe mais "when", pois SÓ temos um tipo (Path)
-                Log.d("ScratchActivity", "Carregando do DB/Path: ${raspadinha.imagePath}")
-                val file = File(raspadinha.imagePath)
-                val uri = Uri.fromFile(file)
-                bgImage.setImageURI(uri)
-
-            } catch (e: IOException) {
-                e.printStackTrace()
-                Log.e("ScratchActivity", "Erro ao carregar a imagem: ${e.message}")
+            withContext(Dispatchers.Main) {
+                if (raspadinha != null) {
+                    bgImage.setImageURI(Uri.fromFile(File(raspadinha.imagePath)))
+                } else {
+                    Toast.makeText(this@ScratchActivity, "Nenhuma raspadinha disponível.", Toast.LENGTH_SHORT).show()
+                    finish() // ou continue com fundo vazio
+                }
             }
         }
 
@@ -65,11 +48,24 @@ class ScratchActivity : AppCompatActivity() {
     }
 
     /**
-     * Esta função agora pede ao GameManager uma imagem aleatória do banco.
+     * Busca uma raspadinha válida (arquivo existe) ou null.
      */
-    private suspend fun getImagemAleatoria(): RaspadinhaEntity? {
+    private suspend fun getImagemAleatoriaSegura(): RaspadinhaEntity? {
         return withContext(Dispatchers.IO) {
-            gameManager.getRandomRaspadinha()
+            val raspadinha = gameManager.getRandomRaspadinha()
+            if (raspadinha ==null) {
+                Log.e("ScratchActivity", "Nenhuma raspadinha no banco.")
+                return@withContext null
+            }
+
+            // Embaralha e procura a primeira com arquivo existente
+            val file = File(raspadinha.imagePath)
+            if (file.exists()) {
+                raspadinha
+            } else {
+                    Log.w("ScratchActivity", "Arquivo não encontrado: ${raspadinha.imagePath}. Ignorando.")
+                null
+                }
+            }
         }
     }
-}

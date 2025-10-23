@@ -12,6 +12,8 @@ class GameManager(db: AppDatabase) {
     private val desafioDao = db.desafioDao()
     private val punicaoDao = db.punicaoDao()
     private val raspadinhaDao = db.raspadinhaDao()
+    private var shuffledRaspadinhas: MutableList<RaspadinhaEntity> = mutableListOf()
+    private var index = 0
 
     suspend fun getRandomPergunta(level: Int): PerguntaEntity? {
         return perguntaDao.getRandomByLevel(level)
@@ -26,9 +28,14 @@ class GameManager(db: AppDatabase) {
         // E precisa chamar a função correta
         return punicaoDao.getRandomByLevel(level)
     }
-    // --- FIM DA CORREÇÃO ---
 
-    suspend fun getRandomRaspadinha(): RaspadinhaEntity? {
-        return raspadinhaDao.getRandom()
+    suspend fun getRandomRaspadinha(): RaspadinhaEntity? { // Function "getRandomRaspadinha" is never used
+        if (shuffledRaspadinhas.isEmpty() || index >= shuffledRaspadinhas.size) {
+            shuffledRaspadinhas = raspadinhaDao.getAll().shuffled().toMutableList()
+            index = 0
+        }
+        return if (shuffledRaspadinhas.isNotEmpty()) {
+            shuffledRaspadinhas[index++]
+        } else null
     }
 }
