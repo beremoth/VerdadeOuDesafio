@@ -120,7 +120,7 @@ class SettingsActivity : AppCompatActivity() {
             }
             text = "-"
             textSize = 18f
-            setBackgroundColor(resources.getColor(R.color.purple_500, theme))
+            setBackgroundColor(resources.getColor(R.color.crimson_glow, theme))
             setTextColor(resources.getColor(R.color.white, theme))
             setOnClickListener {
                 playersContainer.removeView(container)
