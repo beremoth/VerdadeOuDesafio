@@ -58,7 +58,5 @@
             android:exported="true"
             android:theme="@style/Theme.VerdadeOuDesafio"
             android:label="Painel Administrativo" />
-
     </application>
-
 </manifest>

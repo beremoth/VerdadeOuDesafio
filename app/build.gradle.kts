@@ -22,8 +22,12 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-
-
+    applicationVariants.all {
+        outputs.forEach { output ->
+            (output as? com.android.build.gradle.internal.api.BaseVariantOutputImpl)?.outputFileName =
+                "Dare_or_Truth.apk"
+        }
+    }
 
     buildTypes {
         release {
@@ -46,7 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
-        viewBinding = true  // Adicione se estiver usando view binding
+        viewBinding = true
     }
 }
 
