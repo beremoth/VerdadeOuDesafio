@@ -109,7 +109,7 @@
     {
       "text": "Já imaginou transando com algum dos Jogadores ?",
       "type": "truth",
-      "level": 3
+      "level": 3 
     },
     {
       "text": "Já gravou alguma vez transando, se não faria ?",
@@ -202,10 +202,10 @@
       "level": 1
     },
     {
-      "text": "Envie uma mensagem embaraçosa a alguém.",
+     "text": "Envie uma mensagem embaraçosa a alguém.",
       "level": 2},
     {
-      "text": "Dance uma música por 1 minuto.",
+     "text": "Dance uma música por 1 minuto.",
       "level" : 2
     },
     {
@@ -224,5 +224,5 @@
       "text":  "Beije alguém de língua.",
       "level": 3
     }
-  ]
+    ]
 }
