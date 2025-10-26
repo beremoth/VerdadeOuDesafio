@@ -141,6 +141,12 @@
       "type": "truth",
       "level": 3
     },
+{
+"text" :"Já usou vibrado em público?", 
+"type" : "truth", 
+"level":3
+
+},
     {
       "text": "Deixe seu parceiro(a) usar gelo para provocar você.",
       "type": "dare",
