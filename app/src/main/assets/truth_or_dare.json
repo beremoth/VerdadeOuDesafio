@@ -187,6 +187,18 @@
       "type": "dare",
       "level": 3,
       "duration": 180
+    },
+    {
+      "text":"Use um brinquedo sexual por 1 minuto (roupa por cima).",
+      "type": "dare",
+      "level": 3,
+      "duration": 60
+    },
+    {
+      "text":"Deixe alguém te algemar por 3 minutos.",
+      "type":"dare",
+      "level":3,
+      "duration":180
     }
   ],
   "punishments": [
@@ -223,7 +235,7 @@
       "level": 3
     },
     {
-      "text": "Faça uma dança provocante no colo do jogador a sua frente, pode tocar as partes intimas dele com a mão.",
+      "text": "Faça uma dança provocante no colo do jogador a sua frente, pode tocar as partes intimas dele.",
       "level": 3
     },
     {
