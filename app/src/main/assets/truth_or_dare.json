@@ -132,7 +132,7 @@
       "level": 3
     },
     {
-      "text": "Qual parte do corpo você mais gosta de beijar no seu parceiro(a)?",
+      "text": "Qual é o lugar mais inusitado que você já transou com alguém? ",
       "type": "truth",
       "level": 3
     },
@@ -141,6 +141,12 @@
       "type": "truth",
       "level": 3
     },
+{
+"text" :"Já usou vibrado em público?", 
+"type" : "truth", 
+"level":3
+
+},
     {
       "text": "Deixe seu parceiro(a) usar gelo para provocar você.",
       "type": "dare",
