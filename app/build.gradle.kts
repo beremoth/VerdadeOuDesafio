@@ -13,7 +13,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "DareOrTruth"
+        applicationId = "com.example.verdadeoudesafio"
         minSdk = 24
         targetSdk = 35
         versionCode = 2

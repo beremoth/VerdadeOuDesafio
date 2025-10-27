@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
     <gradient
-        android:startColor="@color/fire_red"
+        android:startColor="@color/deep_red"
         android:endColor="@color/accent_glow"
         android:angle="90"/>
     <size

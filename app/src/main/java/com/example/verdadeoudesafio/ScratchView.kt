@@ -15,7 +15,7 @@ class ScratchView @JvmOverloads constructor(
     private var overlayBitmap: Bitmap? = null
     private var overlayCanvas: Canvas? = null
     private val path = Path()
-    private var overlayColor = Color.RED
+    private var overlayColor = Color.DKGRAY
 
     private val paint = Paint().apply {
         isAntiAlias = true
