@@ -2,14 +2,17 @@
     <string name="app_name">Verdade ou Desafio</string>
     <string name="escolha_verdade_ou_desafio">Escolha \'Verdade\' ou \'Desafio\'!</string>
     <string name="Intrucoes">Bem vindo ao Verdade ou Desafio!\n\n
-        1. Escolha entre Verdade ou Desafio.\n
-        2. O aplicativo exibirá uma pergunta ou desafio aleatório com base no nível selecionado.\n
-        3. Use o botão \"Nível\" para ajustar o nível das perguntas:\n
+        1. Escolha entre os modos de jogo.\n
+        2. O aplicativo exibirá uma modo com base no nível selecionado.\n
+        3. Use as configurações para ajustar o nível dos modos:\n
            - Leve: Perguntas/Desafios simples.\n
            - Moderado: Perguntas/Desafios médios.\n
-           - Extremo: Perguntas/Desafios intensos.\n
-        4. Se não quiser responder, clique em \"Pular\" para receber uma consequência.\n\n
-        Divirta-se!</string>
+           - Extremo: Perguntas/Desafios Sexuais.\n
+        4. Se não quiser responder, clique em \"Pular\" para receber uma punição.\n\n
+        Divirta-se!\n\n
+    caso queira adicionar novas perguntas/desafios \n
+        envie para o e-mail: lightredmane@gmail.com
+    </string>
     <string name="digite_o_n_vel_1_2_ou_3">Digite o nível (1, 2 ou 3)</string>
     <string name="Sortear">Sortear outra</string>
 </resources>
