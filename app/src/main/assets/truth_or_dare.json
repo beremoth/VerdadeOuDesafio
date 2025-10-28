@@ -199,6 +199,18 @@
       "type":"dare",
       "level":3,
       "duration":180
+    },
+    {
+      "text":"Escolha alguém, você deve chupa-lá por 1 minuto",
+      "type":"dare",
+      "level":3,
+      "duration":60
+    },
+    {
+      "text":"Rebole no colo de alguém do grupo por 1 minuto",
+      "type":"dare",
+      "level":3,
+      "duration":60
     }
   ],
   "punishments": [
@@ -240,6 +252,10 @@
     },
     {
       "text": "Beije alguém de língua.",
+      "level": 3
+    },
+    {
+      "text": "O próximo Desafio não pode ser pulado",
       "level": 3
     }
   ]
