@@ -39,4 +39,7 @@ interface DesafioDao {
 
     @Query("SELECT COUNT(id) FROM desafios")
     suspend fun count(): Int
+
+    @Query("SELECT EXISTS(SELECT 1 FROM desafios WHERE texto = :text)")
+    suspend fun existsByText(text: String): Boolean
 }

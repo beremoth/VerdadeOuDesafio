@@ -29,4 +29,7 @@ interface RaspadinhaDao {
     // --- FUNÇÃO ADICIONADA --- (Corrige o DatabaseInitializer)
     @Query("SELECT COUNT(id) FROM raspadinhas")
     suspend fun count(): Int
+
+    @Query("SELECT imagePath FROM raspadinhas")
+    suspend fun getAllPaths(): List<String>
 }

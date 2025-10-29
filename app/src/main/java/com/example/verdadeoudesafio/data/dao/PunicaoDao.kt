@@ -37,4 +37,7 @@ interface PunicaoDao {
 
     @Query("SELECT COUNT(id) FROM punicoes")
     suspend fun count(): Int
+
+    @Query("SELECT EXISTS(SELECT 1 FROM punicoes WHERE texto = :text)")
+    suspend fun existsByText(text: String): Boolean
 }

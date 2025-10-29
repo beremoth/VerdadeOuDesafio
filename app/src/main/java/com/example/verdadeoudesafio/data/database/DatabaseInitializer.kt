@@ -2,17 +2,14 @@ package com.example.verdadeoudesafio.data.database
 
 import android.content.Context
 import android.util.Log
-// Imports do Room removidos daqui
 import com.example.verdadeoudesafio.data.entity.DesafioEntity
 import com.example.verdadeoudesafio.data.entity.PerguntaEntity
 import com.example.verdadeoudesafio.data.entity.PunicaoEntity
 import com.example.verdadeoudesafio.data.entity.RaspadinhaEntity
-// Imports do Coroutine removidos daqui
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
 
 class DatabaseInitializer(private val context: Context) {
 
@@ -27,12 +24,12 @@ class DatabaseInitializer(private val context: Context) {
         }
     }
 
-    // Esta função agora é 'public' (padrão) para o AppDatabase chamar
-    suspend fun initializeJsonData(database: AppDatabase) {
+
+    suspend fun checkAndUpdateJsonData(database: AppDatabase) {
         try {
             val jsonString = loadJSON("truth_or_dare.json")
             if (jsonString.isEmpty()) {
-                Log.e("DatabaseInitializer", "truth_or_dare.json está vazio ou não foi encontrado em assets.")
+                Log.e("DatabaseInitializer", "truth_or_dare.json não encontrado ou vazio.")
                 return
             }
 
@@ -41,87 +38,99 @@ class DatabaseInitializer(private val context: Context) {
             val desafioDao = database.desafioDao()
             val punicaoDao = database.punicaoDao()
 
-            if (root.has("questions") && (perguntaDao.count() == 0 || desafioDao.count() == 0)) {
+            // --- Perguntas e Desafios ---
+            if (root.has("questions")) {
                 val questionsArray = root.getJSONArray("questions")
                 for (i in 0 until questionsArray.length()) {
                     val item = questionsArray.getJSONObject(i)
-                    val type = item.optString("type", "")
-                    val text = item.optString("text", "")
+                    val type = item.optString("type", "").lowercase()
+                    val text = item.optString("text", "").trim()
                     val level = item.optInt("level", 1)
                     val duration = item.optInt("duration", 0)
 
-                    when (type.lowercase()) {
+                    if (text.isEmpty()) continue
+
+                    when (type) {
                         "truth" -> {
-                            perguntaDao.insert(PerguntaEntity(texto = text, level = level))
+                            val exists = perguntaDao.existsByText(text)
+                            if (!exists) {
+                                perguntaDao.insert(PerguntaEntity(texto = text, level = level))
+                                Log.d("DatabaseInitializer", "Nova pergunta adicionada: $text")
+                            }
                         }
                         "dare" -> {
-                            desafioDao.insert(DesafioEntity(texto = text, level = level, tempo = duration))
+                            val exists = desafioDao.existsByText(text)
+                            if (!exists) {
+                                desafioDao.insert(DesafioEntity(texto = text, level = level, tempo = duration))
+                                Log.d("DatabaseInitializer", "Novo desafio adicionado: $text")
+                            }
                         }
                     }
                 }
-                Log.d("DatabaseInitializer", "Perguntas/Desafios carregados de assets.")
-            } else {
-                Log.d("DatabaseInitializer", "JSON não tem 'questions' ou perguntas/desafios já populados.")
             }
 
-            if (root.has("punishments") && punicaoDao.count() == 0) {
+            // --- Punições ---
+            if (root.has("punishments")) {
                 val punishmentsArray = root.getJSONArray("punishments")
                 for (i in 0 until punishmentsArray.length()) {
                     val item = punishmentsArray.getJSONObject(i)
-                    val text = item.optString("text", "")
+                    val text = item.optString("text", "").trim()
                     val level = item.optInt("level", 1)
 
-                    punicaoDao.insert(PunicaoEntity(texto = text, level = level))
+                    if (text.isEmpty()) continue
+
+                    val exists = punicaoDao.existsByText(text)
+                    if (!exists) {
+                        punicaoDao.insert(PunicaoEntity(texto = text, level = level))
+                        Log.d("DatabaseInitializer", "Nova punição adicionada: $text")
+                    }
                 }
-                Log.d("DatabaseInitializer", "Punições carregadas de assets.")
-            } else {
-                Log.d("DatabaseInitializer", "JSON não tem 'punishments' ou punições já populadas.")
             }
 
         } catch (e: Exception) {
-            Log.e("DatabaseInitializer", "Erro CRÍTICO ao popular dados do JSON de assets", e)
+            Log.e("DatabaseInitializer", "Erro ao verificar/atualizar JSON", e)
         }
     }
 
-    // Esta função agora é 'public' (padrão)
-    suspend fun initializeRaspadinhas(database: AppDatabase) {
+    suspend fun checkAndUpdateRaspadinhas(database: AppDatabase) {
         val raspadinhaDao = database.raspadinhaDao()
-        if (raspadinhaDao.count() > 0) {
-            Log.d("DatabaseInitializer", "Raspadinhas já existem no DB. Pulando.")
-            return
-        }
-
-        Log.d("DatabaseInitializer", "Inicializando imagens de Raspadinha de assets/raspadinhas...")
-
         val imageFolderName = "raspadinhas"
         val assets = context.assets
-
         val destinationDirectory = File(context.filesDir, "raspadinhas")
+
         if (!destinationDirectory.exists()) {
             destinationDirectory.mkdirs()
         }
 
         try {
-            val imageFileNames = assets.list(imageFolderName) ?: arrayOf()
-            if (imageFileNames.isEmpty()) {
-                Log.w("DatabaseInitializer", "Nenhuma imagem encontrada em assets/raspadinhas")
+            val assetFileNames = assets.list(imageFolderName) ?: emptyArray()
+            if (assetFileNames.isEmpty()) {
+                Log.w("DatabaseInitializer", "Pasta assets/raspadinhas vazia.")
                 return
             }
 
-            for (fileName in imageFileNames) {
-                val destinationFile = File(destinationDirectory, fileName)
-                val inputStream: InputStream = assets.open("$imageFolderName/$fileName")
-                val outputStream = FileOutputStream(destinationFile)
-                inputStream.copyTo(outputStream)
-                inputStream.close()
-                outputStream.close()
+            // Obter nomes já salvos no banco
+            val existingPaths = raspadinhaDao.getAllPaths()
+            val existingFileNames = existingPaths.map { File(it).name }.toSet()
 
-                val newRaspadinha = RaspadinhaEntity(imagePath = destinationFile.absolutePath)
-                raspadinhaDao.insert(newRaspadinha)
-                Log.d("DatabaseInitializer", "Copiou de assets e salvou no DB: ${destinationFile.absolutePath}")
+            for (fileName in assetFileNames) {
+                if (fileName in existingFileNames) continue // Já existe
+
+                // Copiar do assets para app private dir
+                val destinationFile = File(destinationDirectory, fileName)
+                assets.open("$imageFolderName/$fileName").use { input ->
+                    FileOutputStream(destinationFile).use { output ->
+                        input.copyTo(output)
+                    }
+                }
+
+                // Inserir no banco
+                raspadinhaDao.insert(RaspadinhaEntity(imagePath = destinationFile.absolutePath))
+                Log.d("DatabaseInitializer", "Nova raspadinha adicionada: $fileName")
             }
+
         } catch (e: Exception) {
-            Log.e("DatabaseInitializer", "Erro ao inicializar raspadinhas de assets", e)
+            Log.e("DatabaseInitializer", "Erro ao verificar/atualizar raspadinhas", e)
         }
     }
 }

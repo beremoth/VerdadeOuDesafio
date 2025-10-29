@@ -64,8 +64,8 @@ abstract class AppDatabase : RoomDatabase() {
                         if (perguntaCount == 0 && desafioCount == 0 && punicaoCount == 0 && raspadinhaCount == 0) {
                             Log.w("AppDatabase", "Banco detectado vazio. Forçando inicialização...")
                             val initializer = DatabaseInitializer(context)
-                            initializer.initializeJsonData(instance)
-                            initializer.initializeRaspadinhas(instance)
+                            initializer.checkAndUpdateJsonData(instance)
+                            initializer.checkAndUpdateRaspadinhas(instance)
                             Log.d("AppDatabase", "Banco populado via fallback automático.")
                         } else {
                             Log.d("AppDatabase", "Banco já contém dados. Nenhuma ação necessária.")
@@ -97,10 +97,10 @@ abstract class AppDatabase : RoomDatabase() {
                     try {
                         val initializer = DatabaseInitializer(context)
                         Log.d("AppDatabase", "→ Populando JSON inicial...")
-                        initializer.initializeJsonData(database)
+                        initializer.checkAndUpdateJsonData(database)
 
                         Log.d("AppDatabase", "→ Populando imagens de Raspadinhas...")
-                        initializer.initializeRaspadinhas(database)
+                        initializer.checkAndUpdateRaspadinhas(database)
 
                         Log.d("AppDatabase", "Banco populado com sucesso via onCreate.")
                     } catch (e: Exception) {

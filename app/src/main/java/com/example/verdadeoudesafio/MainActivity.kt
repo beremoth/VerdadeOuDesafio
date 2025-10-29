@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.verdadeoudesafio.data.database.AppDatabase
+import com.example.verdadeoudesafio.data.database.DatabaseInitializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -56,19 +57,19 @@ class MainActivity : AppCompatActivity() {
 
 
         lifecycleScope.launch {
-            // Cria o banco e força a inicialização
+            // 1. Obtém a instância do banco (já cria/popula se for a primeira vez)
             db = withContext(Dispatchers.IO) {
                 AppDatabase.getDatabase(applicationContext)
             }
 
-            // Força a execução do callback se for o primeiro uso
-            withContext(Dispatchers.IO) {
-                db.openHelper.writableDatabase // Garante que o DB físico é criado
-            }
+            // 2. ✅ Verifica e atualiza conteúdo dos assets (perguntas, desafios, punições, raspadinhas)
+            val initializer = DatabaseInitializer(applicationContext)
+            initializer.checkAndUpdateJsonData(db)
+            initializer.checkAndUpdateRaspadinhas(db)
 
+            // 3. Inicializa o GameManager
             gameManager = GameManager(db)
         }
-
 
 
         // Configuração dos botões

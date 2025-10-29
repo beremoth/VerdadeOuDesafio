@@ -40,4 +40,11 @@ interface PerguntaDao {
 
     @Query("DELETE FROM perguntas")
     suspend fun deleteAll()
+
+    @Query("SELECT EXISTS(SELECT 1 FROM perguntas WHERE texto = :text)")
+    suspend fun existsByText(text: String): Boolean
+
+    @Query("SELECT texto FROM perguntas")
+    suspend fun getAllTexts(): List<String>
+
 }
