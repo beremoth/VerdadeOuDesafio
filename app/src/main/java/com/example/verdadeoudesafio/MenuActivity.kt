@@ -50,7 +50,7 @@ class MenuActivity : AppCompatActivity() {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
-        InfoCard(
+        configureCard(
             cardId = R.id.card_informacoes,
             iconRes = R.drawable.ic_info,
             title = "Configurações"
