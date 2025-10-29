@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -37,7 +36,7 @@ class RaspadinhaAdminFragment : Fragment() {
     private lateinit var adapter: RaspadinhaAdminAdapter
 
     protected val db by lazy {
-        AppDatabase.getDatabase(requireContext().applicationContext, lifecycleScope)
+        AppDatabase.getDatabase(requireContext().applicationContext)
     }
 
     // --- Permissões e seletor de imagem ---

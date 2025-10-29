@@ -26,6 +26,13 @@ class PainelAdminActivity : AppCompatActivity() {
 
         }.attach()
 
+        //lifecycleScope.launch(Dispatchers.IO) {
+        //    val initializer = DatabaseInitializer(this@PainelAdminActivity)
+        //    initializer.initializeJsonData(db)
+        //    initializer.initializeRaspadinhas(db)
+        //    // Atualize os adapters
+        //}
+
         supportActionBar?.title = "Painel Administrativo"
     }
 }

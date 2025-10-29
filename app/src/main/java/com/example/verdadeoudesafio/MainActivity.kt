@@ -55,19 +55,11 @@ class MainActivity : AppCompatActivity() {
         initializeUI()
         requestVibrationPermissionIfNeeded()
 
-
+ // iniciando banco, deletando tudo e refazendo com pasta assets
         lifecycleScope.launch {
-            // 1. Obtém a instância do banco (já cria/popula se for a primeira vez)
             db = withContext(Dispatchers.IO) {
                 AppDatabase.getDatabase(applicationContext)
             }
-
-            // 2. ✅ Verifica e atualiza conteúdo dos assets (perguntas, desafios, punições, raspadinhas)
-            val initializer = DatabaseInitializer(applicationContext)
-            initializer.checkAndUpdateJsonData(db)
-            initializer.checkAndUpdateRaspadinhas(db)
-
-            // 3. Inicializa o GameManager
             gameManager = GameManager(db)
         }
 

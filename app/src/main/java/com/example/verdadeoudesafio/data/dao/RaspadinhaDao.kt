@@ -26,6 +26,9 @@ interface RaspadinhaDao {
     @Delete
     suspend fun delete(raspadinha: RaspadinhaEntity)
 
+    @Query("DELETE FROM raspadinhas")
+    suspend fun deleteAll()
+
     // --- FUNÇÃO ADICIONADA --- (Corrige o DatabaseInitializer)
     @Query("SELECT COUNT(id) FROM raspadinhas")
     suspend fun count(): Int
