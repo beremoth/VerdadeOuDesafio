@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "questions": [
     {
       "text": "Qual é a coisa mais engraçada que já aconteceu com você?",
@@ -158,16 +159,10 @@
       "duration": 120
     },
     {
-      "text": "Faça uma lap dance para a pessoa na sua frente.",
+      "text": "Sente na face de um dos jogadores de sua escolha, sem a parte de baixo da roupa",
       "type": "dare",
       "level": 3,
-      "duration": 90
-    },
-    {
-      "text": "Sente na face de um dos jogadores de sua escolha, sem a parte de baixo da roupa, o escolhido decide ou não te chupar",
-      "type": "dare",
-      "level": 3,
-      "duration": 55
+      "duration": 60
     },
     {
       "text": "Use uma venda nos olhos enquanto o último participante te provoca.",
@@ -253,10 +248,6 @@
     },
     {
       "text": "Faça uma dança provocante no colo do jogador a sua frente, pode tocar as partes intimas dele.",
-      "level": 3
-    },
-    {
-      "text": "Beije alguém de língua.",
       "level": 3
     },
     {

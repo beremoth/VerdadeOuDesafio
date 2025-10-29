@@ -1,62 +1,86 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient"
-    >
+    android:padding="24dp"
+    tools:context=".MenuActivity">
 
+    <!-- Título -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="250dp"
-        android:text="Verdade ou Desafio"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        android:textColor="@color/white" />
+        android:fontFamily="sans-serif-thin"
+        android:text="ÍNTIMO"
+        android:textColor="@color/text_primary"
+        android:textSize="48sp"
+        android:letterSpacing="0.2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="64dp" />
 
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/titleText"
-        android:layout_marginTop="30dp"
-        android:text="Iniciar Jogo"
-        android:textColor="@color/white"
-        android:background="@drawable/button_gradient" />
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:text="exploração . desejo . jogo"
+        android:textColor="@color/text_tertiary"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/titleText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
 
-    <Button
-        android:id="@+id/instructionsButton"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/startButton"
-        android:layout_marginTop="20dp"
-        android:text="Instruções"
-        android:textColor="@color/white"
-        android:background="@drawable/button_gradient" />
+    <!-- Grade de opções -->
+    <androidx.gridlayout.widget.GridLayout
+        android:id="@+id/grid_modules"
+        android:layout_width="358dp"
+        android:layout_height="268dp"
+        android:layout_marginTop="80dp"
+        app:columnCount="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtitle">
 
-    <Button
-        android:id="@+id/btnRaspadinha"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/instructionsButton"
-        android:layout_marginTop="20dp"
-        android:text="Raspadinha"
-        android:textColor="@color/white"
-        android:background="@drawable/button_gradient" />
+        <include
+            android:id="@+id/card_truth_dare"
+            layout="@layout/card_truth_dare"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_columnWeight="1" />
 
+        <include
+            android:id="@+id/card_raspadinha"
+            layout="@layout/card_raspadinha"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_columnWeight="1" />
 
-    <Button
-        android:id="@+id/settingsButton"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/btnRaspadinha"
-        android:layout_marginTop="20dp"
-        android:text="Configurações"
-        android:textColor="@color/white"
-        android:background="@drawable/button_gradient" />
-</RelativeLayout>
+        <include
+            android:id="@+id/card_informacoes"
+            layout="@layout/card_informacoes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            app:layout_columnWeight="1" />
+
+        <include
+            android:id="@+id/card_configuracoes"
+            layout="@layout/card_configuracoes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            app:layout_columnWeight="1" />
+    </androidx.gridlayout.widget.GridLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

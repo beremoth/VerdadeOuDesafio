@@ -14,4 +14,12 @@
     <color name="black">@color/dark_bg</color>
     <color name="white">@color/text_light</color>
     <color name="gray">@color/metal_gray</color>
+
+    <!-- cores menu -->
+    <color name="card_bg_translucent">#1AFFFFFF</color>
+    <color name="card_border">#22FFFFFF</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#CCCCCC</color>
+    <color name="text_tertiary">#888888</color>
+    <color name="accent">#E50914</color>
 </resources>

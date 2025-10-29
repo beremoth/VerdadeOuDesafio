@@ -41,10 +41,16 @@ abstract class AppDatabase : RoomDatabase() {
                     "verdade_ou_desafio_db"
                 )
                     .fallbackToDestructiveMigration()
-                    .addCallback(DatabaseCallback(context))
                     .build()
 
                 INSTANCE = instance
+
+                // ✅ Verifica versão do JSON e atualiza se necessário
+                CoroutineScope(Dispatchers.IO).launch {
+                    val initializer = DatabaseInitializer(context)
+                    initializer.checkAndReloadIfNewVersion(instance)
+                }
+
                 instance
             }
         }

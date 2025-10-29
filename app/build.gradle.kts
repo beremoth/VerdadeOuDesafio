@@ -17,7 +17,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 2
-        versionName = "2.1"
+        versionName = "2.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -72,16 +72,12 @@ dependencies {
     implementation(libs.androidx.material3)
 
     // Dependências específicas para seu jogo
-    implementation(libs.androidx.room.runtime)// Se for usar Room para banco de dados
+    implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.gson)
+    implementation(libs.androidx.gridlayout)
     ksp(libs.androidx.room.compiler)
 
-
-
-    // Para processamento JSON
-
-    // Testes
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

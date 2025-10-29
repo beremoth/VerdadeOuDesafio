@@ -3,7 +3,10 @@ package com.example.verdadeoudesafio
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.verdadeoudesafio.databinding.ActivityMenuBinding
 
@@ -11,51 +14,78 @@ class MenuActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMenuBinding
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Infla o layout activity_menu.xml
         binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // botão para verdade ou desafio
-        binding.startButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
-                // botão para rapadinha
-        binding.btnRaspadinha.setOnClickListener {
-            val intent = Intent(this, ScratchActivity::class.java)
-            startActivity(intent)
-        }
+        setupMenuCards()
+    }
 
-
-        binding.instructionsButton.setOnClickListener {
-            val alertDialogBuilder = AlertDialog.Builder(this)
-            val inflater = layoutInflater
-            val dialogView = inflater.inflate(R.layout.custom_dialog, null)
-
-            alertDialogBuilder.setView(dialogView)
-
-            // Criando o AlertDialog antes de configurar o botão
-            val alertDialog = alertDialogBuilder.create()
-
-            // Vincula os componentes do layout personalizado
-            val dialogButton = dialogView.findViewById<Button>(R.id.dialogButton)
-
-            // Configura o botão "Entendido"
-            dialogButton.setOnClickListener {
-                alertDialog.dismiss() // Fecha o diálogo corretamente
-            }
-
-            // Exibe o popup
-            alertDialog.show()
+    private fun setupMenuCards() {
+        // --- Verdade ou Desafio ---
+        configureCard(
+            cardId = R.id.card_truth_dare,
+            iconRes = R.drawable.ic_flame,
+            title = "Verdade ou Desafio"
+        ) {
+            startActivity(Intent(this, MainActivity::class.java))
         }
 
-        binding.settingsButton.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
+        // --- Raspadinha ---
+        configureCard(
+            cardId = R.id.card_raspadinha,
+            iconRes = R.drawable.ic_image,
+            title = "Raspadinha"
+        ) {
+            startActivity(Intent(this, ScratchActivity::class.java))
         }
+
+        // --- Configurações ---
+        configureCard(
+            cardId = R.id.card_configuracoes,
+            iconRes = R.drawable.ic_gear,
+            title = "Configurações"
+        ) {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        InfoCard(
+            cardId = R.id.card_informacoes,
+            iconRes = R.drawable.ic_info,
+            title = "Configurações"
+
+        ){
+            showInstructionsDialog("@string/Intrucoes")
+        }
+    }
+
+    private fun configureCard(cardId: Int, iconRes: Int, title: String, onClick: () -> Unit) {
+        val card = findViewById<View>(cardId)
+        val icon = card.findViewById<ImageView>(R.id.icon)
+        val titleView = card.findViewById<TextView>(R.id.title)
+
+        icon.setImageResource(iconRes)
+        titleView.text = title
+
+        // Animação ao toque
+        card.setOnClickListener {
+            card.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction {
+                card.animate().scaleX(1f).scaleY(1f).setDuration(150).start()
+                onClick()
+            }.start()
+        }
+    }
+
+    private fun showInstructionsDialog(message: String) {
+        val dialogView = layoutInflater.inflate(R.layout.custom_dialog, null)
+        val dialogButton = dialogView.findViewById<Button>(R.id.dialogButton)
+
+        val alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        dialogButton.setOnClickListener { alertDialog.dismiss() }
+        alertDialog.show()
     }
 }
