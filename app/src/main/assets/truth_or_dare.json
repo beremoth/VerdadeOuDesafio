@@ -108,7 +108,7 @@
       "level": 3
     },
     {
-      "text": "Já imaginou transando com algum dos Jogadores ?",
+      "text": "Com quem aqui você mais tem vontade de transar? Por quê?",
       "type": "truth",
       "level": 3
     },
@@ -128,7 +128,7 @@
       "level": 3
     },
     {
-      "text": "Você já fingiu orgasmo? Com quem?",
+      "text": "Você já fingiu orgasmo? por quê?",
       "type": "truth",
       "level": 3
     },
@@ -153,13 +153,33 @@
       "level": 3
     },
     {
+      "text": "Você prefere dar ou receber prazer?",
+      "type": "truth",
+      "level": 3
+    },
+    {
+      "text": "Descreva a última vez que você se masturbou - onde estava e no que pensava",
+      "type": "truth",
+      "level": 3
+    },
+    {
+      "text": "Conte a experiência sexual mais intensa que você já teve - detalhes",
+      "type": "truth",
+      "level": 3
+    },
+    {
+      "text": "Qual a coisa mais suja que você já pediu ou fez na cama?",
+      "type": "truth",
+      "level": 3
+    },
+    {
       "text": "Deixe seu parceiro(a) usar gelo para provocar você.",
       "type": "dare",
       "level": 3,
       "duration": 120
     },
     {
-      "text": "Sente na face de um dos jogadores de sua escolha, sem a parte de baixo da roupa",
+      "text": "Sente na face de um dos jogadores com alguém (sem roupa de baixo)",
       "type": "dare",
       "level": 3,
       "duration": 60
@@ -211,6 +231,21 @@
       "type":"dare",
       "level":3,
       "duration":60
+    },
+    {
+      "text": "Demonstre sua posição sexual favorita com alguém - pode ser vestido",
+      "type": "dare",
+      "level": 3
+    },
+    {
+      "text": "Faça a pessoa ao seu lado gemer sem tirar a roupa dela",
+      "level": 3,
+      "type": "dare"
+    },
+    {
+      "text" : "Faça a pessoa ao seu lado gemer sem tirar a roupa dela",
+      "level": 3,
+      "type": "dare"
     }
   ],
   "punishments": [
