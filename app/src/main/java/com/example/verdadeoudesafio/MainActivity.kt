@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         truthButton.setOnClickListener {
             isGameStarted = true
             currentTimer?.cancel()
+            questionText.visibility = View.VISIBLE
             showQuestion("truth")
             nextPlayer()
         }
@@ -75,6 +76,7 @@ class MainActivity : AppCompatActivity() {
         dareButton.setOnClickListener {
             isGameStarted = true
             currentTimer?.cancel()
+            questionText.visibility = View.VISIBLE
             showQuestion("dare")
             nextPlayer()
         }
@@ -82,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         skipButton.setOnClickListener {
             isGameStarted = true
             currentTimer?.cancel()
+            questionText.visibility = View.VISIBLE
             showPunishment()
             nextPlayer()
         }
