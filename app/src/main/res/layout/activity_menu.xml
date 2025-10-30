@@ -42,7 +42,7 @@
         android:id="@+id/grid_modules"
         android:layout_width="358dp"
         android:layout_height="268dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="100dp"
         app:columnCount="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -54,6 +54,7 @@
             layout="@layout/card_truth_dare"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="10dp"
             app:layout_columnWeight="1" />
 
@@ -62,6 +63,7 @@
             layout="@layout/card_raspadinha"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="10dp"
             app:layout_columnWeight="1" />
 
