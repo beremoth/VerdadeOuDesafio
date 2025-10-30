@@ -56,7 +56,7 @@ class MenuActivity : AppCompatActivity() {
             title = "Informações"
 
         ){
-            showInstructionsDialog("@string/Intrucoes")
+            showInstructionsDialog()
         }
     }
 
@@ -77,7 +77,7 @@ class MenuActivity : AppCompatActivity() {
         }
     }
 
-    private fun showInstructionsDialog(message: String) {
+    private fun showInstructionsDialog() {
         val dialogView = layoutInflater.inflate(R.layout.custom_dialog, null)
         val dialogButton = dialogView.findViewById<Button>(R.id.dialogButton)
 
