@@ -53,7 +53,7 @@ class MenuActivity : AppCompatActivity() {
         configureCard(
             cardId = R.id.card_informacoes,
             iconRes = R.drawable.ic_info,
-            title = "Configurações"
+            title = "Informações"
 
         ){
             showInstructionsDialog("@string/Intrucoes")
