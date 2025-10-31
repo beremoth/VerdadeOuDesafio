@@ -13,12 +13,13 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.verdadeoudesafio.data.database.AppDatabase
-import com.example.verdadeoudesafio.data.database.DatabaseInitializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,12 +32,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var truthButton: Button
     private lateinit var dareButton: Button
     private lateinit var skipButton: Button
-    private lateinit var settingsButton: Button
+    private lateinit var settingsButton: FrameLayout
     private lateinit var levelText: TextView
     private lateinit var timerText: TextView
     private lateinit var startTimerButton: Button
     private lateinit var db: AppDatabase
     private lateinit var gameManager: GameManager
+    private lateinit var timerContainer: LinearLayout
 
 
     private var players: MutableList<String> = mutableListOf()
@@ -99,6 +101,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         startTimerButton.visibility = View.GONE // Esconde o botão do timer inicialmente
+        questionText.visibility = View.GONE // Esconde a pergunta inicialmente
     }
 
 
@@ -118,9 +121,10 @@ class MainActivity : AppCompatActivity() {
         dareButton = findViewById(R.id.btn_dare)
         skipButton = findViewById(R.id.btn_consequence)
         settingsButton = findViewById(R.id.btn_settings)
-        levelText = findViewById(R.id.level_text) // Encontra o TextView do nível
+        levelText = findViewById(R.id.level_text)
         timerText = findViewById(R.id.timer_text)
         startTimerButton = findViewById(R.id.btn_start_timer)
+        timerContainer = findViewById(R.id.timerContainer)
     }
 
     private fun loadPlayers() {
@@ -192,6 +196,7 @@ class MainActivity : AppCompatActivity() {
                             timerText.text = String.format("%02d:%02d", min, sec)
                             timerText.visibility = View.VISIBLE
                             startTimerButton.visibility = View.VISIBLE
+                            timerContainer.visibility = View.VISIBLE
                         } else {
                             timerText.visibility = View.GONE
                             startTimerButton.visibility = View.GONE

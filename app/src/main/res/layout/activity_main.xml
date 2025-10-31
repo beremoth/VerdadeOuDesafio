@@ -3,11 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient">
+    android:background="@drawable/background_gradient"
+    tools:context=".MainActivity">
 
-    <!-- Título principal -->
+    <!-- Cabeçalho -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
@@ -15,25 +17,28 @@
         android:layout_marginTop="64dp"
         android:fontFamily="sans-serif-light"
         android:text="VERDADE OU DESAFIO"
-        android:textColor="@color/white"
+        android:textColor="@color/text_primary_main"
         android:textSize="32sp"
+        android:letterSpacing="0.05"
         android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:fontFamily="sans-serif-light"
-        android:text="Modo Fogo"
+        android:text="modo fogo"
         android:textColor="@color/text_tertiary_main"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:letterSpacing="0.1"
+        android:alpha="0.8"
+        app:layout_constraintTop_toBottomOf="@id/titleText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleText" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Texto do jogador -->
     <TextView
@@ -41,14 +46,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="40dp"
         android:fontFamily="sans-serif-light"
         android:gravity="center"
-        android:textColor="@color/text_primary_main"
+        android:textColor="@color/text_secondary_main"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:alpha="0.9"
         app:layout_constraintTop_toBottomOf="@id/subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="É a vez de: Jogador 1" />
 
     <!-- Texto da pergunta -->
@@ -56,46 +62,50 @@
         android:id="@+id/question_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="24dp"
         android:fontFamily="sans-serif-light"
         android:gravity="center"
         android:textColor="@color/text_primary_main"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="20sp"
+        android:lineSpacingExtra="6dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/player_text"
-        tools:text="Pergunta / Desafio"
-        android:visibility="gone"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"
+        tools:text="Faça uma declaração ousada para a pessoa à sua direita." />
 
-    <!-- Nível -->
+    <!-- Nível atual -->
     <TextView
         android:id="@+id/level_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:background="@drawable/rounded_background"
         android:fontFamily="sans-serif-light"
-        android:paddingHorizontal="12dp"
+        android:paddingHorizontal="14dp"
         android:paddingVertical="6dp"
         android:text="Nível: Moderado"
-        android:textColor="@color/text_primary_main"
+        android:textColor="@color/text_secondary_main"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:alpha="0.9"
+        app:layout_constraintTop_toBottomOf="@id/question_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/question_text" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp" />
 
-    <!-- Timer e Botão -->
+    <!-- Timer + botão -->
     <LinearLayout
         android:id="@+id/timerContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
+        android:gravity="center"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/level_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="visible">
 
         <Button
@@ -103,11 +113,11 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginEnd="12dp"
-            android:background="@drawable/button_gradient"
-            android:fontFamily="sans-serif-light"
+            android:background="@drawable/button_glow"
             android:text="▶"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-light" />
 
         <TextView
             android:id="@+id/timer_text"
@@ -118,68 +128,63 @@
             android:paddingHorizontal="12dp"
             android:paddingVertical="8dp"
             android:text="00:00"
-            android:textColor="@color/white"
+            android:textColor="@color/text_primary_main"
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Botões de ação -->
+    <!-- Botões principais -->
     <LinearLayout
         android:id="@+id/buttonsContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
         android:layout_marginTop="48dp"
+        android:layout_marginHorizontal="24dp"
         android:orientation="vertical"
-        android:paddingVertical="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/timerContainer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timerContainer">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <Button
             android:id="@+id/btn_truth"
             style="@style/ActionCardButton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
             android:text="VERDADE"
             android:textColor="@color/text_primary_main" />
 
         <Button
             android:id="@+id/btn_dare"
             style="@style/ActionCardButton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="12dp"
             android:text="DESAFIO"
+            android:layout_marginTop="12dp"
             android:textColor="@color/text_primary_main" />
 
         <Button
             android:id="@+id/btn_consequence"
             style="@style/ActionCardButton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="12dp"
             android:text="CONSEQUÊNCIA"
+            android:layout_marginTop="12dp"
             android:textColor="@color/text_primary_main" />
     </LinearLayout>
 
-    <!-- Botão de Configurações (canto inferior direito) -->
+    <!-- Botão Configurações -->
+
     <FrameLayout
         android:id="@+id/btn_settings"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_margin="24dp"
-        android:background="@drawable/small_circle"
-        android:foreground="?attr/selectableItemBackground"
+        android:background="@drawable/button_round_dark"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_gear"
-            app:tint="@color/text_tertiary_main"
+            app:tint="@color/text_secondary_main"
             tools:ignore="ContentDescription" />
     </FrameLayout>
 

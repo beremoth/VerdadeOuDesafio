@@ -1,42 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Paleta principal -->
+    <!-- Paleta base escura -->
     <color name="dark_bg">#0A0A0A</color>
     <color name="deep_red">#8B0000</color>
     <color name="crimson_glow">#C70039</color>
     <color name="fire_red">#FF1E1E</color>
     <color name="metal_gray">#2B2B2B</color>
     <color name="dark_shadow">#1A1A1A</color>
-    <color name="text_light">#EAEAEA</color>
     <color name="accent_glow">#B30000</color>
 
-    <!-- Antigos substituídos para compatibilidade -->
-    <color name="black">@color/dark_bg</color>
-    <color name="white">@color/text_light</color>
-    <color name="gray">@color/metal_gray</color>
 
-    <!-- cores menu -->
-    <color name="card_bg_translucent">#1AFFFFFF</color>
-    <color name="card_border">#22FFFFFF</color>
+    <!-- Texto -->
+    <color name="text_light">#EAEAEA</color>
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#CCCCCC</color>
     <color name="text_tertiary">#888888</color>
-    <color name="accent">#E50914</color>
-
-    <!-- Botões -->
-
-    <!-- Cores para o novo tema -->
     <color name="text_primary_main">#FFFFFF</color>
     <color name="text_secondary_main">#B0B0B0</color>
     <color name="text_tertiary_main">#707070</color>
 
-    <!-- Estilo para os botões de ação -->
-    <style name="ActionCardButton" parent="Widget.Material3.Button">
-        <item name="android:background">@drawable/button_gradient</item>
-        <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:letterSpacing">0.1</item>
-        <item name="cornerRadius">16dp</item>
-    </style>
+    <!-- Cartões e superfícies -->
+    <color name="card_bg_translucent">#1AFFFFFF</color>
+    <color name="card_border">#22FFFFFF</color>
+
+    <!-- Antigos / compatibilidade -->
+    <color name="black">@color/dark_bg</color>
+    <color name="white">#EAEAEA</color>
+    <color name="gray">@color/metal_gray</color>
+    <color name="accent">#E50914</color>
 </resources>
